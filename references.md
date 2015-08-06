@@ -7,3 +7,6 @@
 7. more on ko implementation of google Maps: http://www.codeproject.com/Articles/351298/KnockoutJS-and-Google-Maps-binding
 8. An app using ko and google maps:http://www.codeproject.com/Articles/387626/BikeInCity-KnockoutJS-JQuery-Google-Maps
 9. custom binding issue:http://stackoverflow.com/questions/15545547/custom-binding-valueaccessor-has-unexpected-result
+10. https://github.com/eelomar/P5-Neighborhod
+11.https://github.com/parachaz/P5NeighborhoodMap
+12. https://github.com/cookiewang/udcity_front_end_web_project_5
