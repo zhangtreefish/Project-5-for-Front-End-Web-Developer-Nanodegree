@@ -10,3 +10,5 @@
 10. https://github.com/eelomar/P5-Neighborhod
 11.https://github.com/parachaz/P5NeighborhoodMap
 12. https://github.com/cookiewang/udcity_front_end_web_project_5
+13: knockout live search: https://gist.github.com/hinchley/5973926
+14: live search: https://gist.github.com/hinchley/5973926
