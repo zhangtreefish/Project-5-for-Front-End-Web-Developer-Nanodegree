@@ -8,3 +8,5 @@
 8. An app using ko and google maps:http://www.codeproject.com/Articles/387626/BikeInCity-KnockoutJS-JQuery-Google-Maps
 9. custom binding issue:http://stackoverflow.com/questions/15545547/custom-binding-valueaccessor-has-unexpected-result
 10. ko implementation of map pins: http://stackoverflow.com/questions/29557938/removing-map-pin-with-search
+11. value binding and subscribe in ko: http://stackoverflow.com/questions/19131154/updating-element-back-when-model-updates-while-using-knockout-custom-binding
+12. same as 11: http://deostroll-developer.blogspot.com/2013/10/subscribing-to-your-observable-in.html
