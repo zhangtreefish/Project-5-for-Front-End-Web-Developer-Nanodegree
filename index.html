@@ -1,25 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <title> SA Retirement Homes </title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
     <style type="text/css">
       html, body, #map-canvas { height: 100%; margin: 0; padding: 0;}
       #map-canvas {width:500px; height:400px;}
       #listPlace {height:100%}
     </style>
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script type="text/javascript"
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAt9NmLDjWl_kQngI0jq0BPA3QUXuMQM_I">
-    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAt9NmLDjWl_kQngI0jq0BPA3QUXuMQM_I"></script>
     <script src="js/lib/knockout-3.2.0.js"></script>
   </head>
   <body>
     <div class="container">
         <div class="row" display="inline-flex">
-            <h1> My Hometown </h1>
+            <h1> San Antonio </h1>
             <div class="col-md-4" id="place-list">
                 <ul data-bind="foreach:placeList">
-                    <li data-bind="text:name,click: ">
+                    <li data-bind="text:name,valueUpdate:$parent.onQuery()">
                     </li>
                 </ul>
             </div>
@@ -37,7 +38,7 @@
 
         var Place = function(data) {
             this.name = ko.observable(data.name);
-            this.latLng = ko.observable(data.latLng);
+            //this.latLng = ko.observable(data.latLng);
         };
 
          var initialPlaces = [
@@ -55,31 +56,32 @@
             }
         ];
 
-        var viewModel = {
+        var ViewModel = function() {
+            var self = this;
+            this.placeList = ko.observableArray([]);
 
-            placeList: ko.observableArray([]),
+            initialPlaces.forEach (function(placeEl) {
+                self.placeList.push(new Place(placeEl));
+            });
 
-            /*for (var place in initialPlaces) {
-                viewModel.placeList.push(new Place(initialPlaces[place]);
-            }*/
+            this.query = ko.observable('tierra');
 
-            query: ko.observable(''),
-
-            search: function(value) {
-                viewModel.placeList.removeAll();
+            this.onQuery = function(value) {
+                self.placeList.removeAll();
 
                 if (value == '') return;
 
                 for (var place in initialPlaces) {
                     if (initialPlaces[place].name.toLowerCase().indexOf(value.toLowerCase()) >= 0) {
-                        viewModel.placeList.push(initialPlaces[place]);
+                        self.placeList.push(initialPlaces[place]);
                     }
-                }
-            }//if delete 64-76 the map shows
+                };
+            };
+            self.query.subscribe(self.onQuery);
         };
 
         function initialize() {
-            var myLatLng = new google.maps.LatLng(29.8, 121.5);
+            var myLatLng = new google.maps.LatLng(29.6, -98.5);
 
             var mapOptions = {
                 center: myLatLng,
@@ -99,8 +101,8 @@
 
         google.maps.event.addDomListener(window, 'load', initialize);
 
-        viewModel.query.subscribe(viewModel.search);
-        ko.applyBindings(viewModel);
+
+        ko.applyBindings(new ViewModel());
     </script>
   </body>
 </html>
