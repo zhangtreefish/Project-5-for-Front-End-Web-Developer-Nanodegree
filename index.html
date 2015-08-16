@@ -17,20 +17,22 @@
   <body>
     <div class="container">
         <div class="row" display="inline-flex">
-            <h1> San Antonio </h1>
-            <div class="col-md-4" id="place-list">
+            <h1> San Antonio Senior Homes </h1>
+            <div class="col-md-4" id="place-list">List View
                 <ul data-bind="foreach:placeList">
                     <li data-bind="text:name,valueUpdate:$parent.onQuery()">
                     </li>
                 </ul>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4">Search Bar
                 <form>
                     <input id="search" type="search" name="search" placeholder="Dad's retirement home" data-bind="value: query, valueUpdate: 'keyup'" autocomplete="off" />
                 </form>
             </div>
 
-            <div class="col-md-4" id="map-canvas">
+            <div class="col-md-4"> Map
+                <div id="map-canvas">
+                </div>
             </div>
         </div>
     </div>
