@@ -15,73 +15,30 @@
     <script src="js/lib/knockout-3.2.0.js"></script>
   </head>
   <body>
-    <div class="container">
+   <div class="container">
         <div class="row" display="inline-flex">
             <h1> San Antonio Senior Homes </h1>
-            <div class="col-md-4" id="place-list">List View
-                <ul data-bind="foreach:placeList">
-                    <li data-bind="text:name,valueUpdate:$parent.onQuery()">
-                    </li>
-                </ul>
-            </div>
-            <div class="col-md-4">Search Bar
-                <form>
-                    <input id="search" type="search" name="search" placeholder="Dad's retirement home" data-bind="value: query, valueUpdate: 'keyup'" autocomplete="off" />
-                </form>
+            <div class="col-md-4">
+                <h2>Search Bar</h2>
+                <input id="search" type="search" name="search" placeholder="San Antonio retirement homes" data-bind="value: query, valueUpdate: 'keyup'" autocomplete="off"></input>
             </div>
 
-            <div class="col-md-4"> Map
+            <div id="list-view" class="col-md-4">
+                <h2>List View</h2>
+                    <ul data-bind="foreach: search()">
+                        <li data-bind="text: name"></li>
+                    </ul>
+            </div>
+
+            <div class="col-md-4">
+                <h2>Map</h2>
                 <div id="map-canvas">
                 </div>
             </div>
         </div>
     </div>
     <script type='text/javascript'>
-
-        var Place = function(data) {
-            this.name = ko.observable(data.name);
-            //this.latLng = ko.observable(data.latLng);
-        };
-
-         var initialPlaces = [
-            {
-                name:'senior care',
-                latLng:""
-            },
-            {
-                name:'swimming pool',
-                latLng:""
-            },
-            {
-                name:'park',
-                latLng:""
-            }
-        ];
-
-        var ViewModel = function() {
-            var self = this;
-            this.placeList = ko.observableArray([]);
-
-            initialPlaces.forEach (function(placeEl) {
-                self.placeList.push(new Place(placeEl));
-            });
-
-            this.query = ko.observable('tierra');
-
-            this.onQuery = function(value) {
-                self.placeList.removeAll();
-
-                if (value == '') return;
-
-                for (var place in initialPlaces) {
-                    if (initialPlaces[place].name.toLowerCase().indexOf(value.toLowerCase()) >= 0) {
-                        self.placeList.push(initialPlaces[place]);
-                    }
-                };
-            };
-            self.query.subscribe(self.onQuery);
-        };
-
+    //FIRST need to load the map
         function initialize() {
             var myLatLng = new google.maps.LatLng(29.6, -98.5);
 
@@ -103,8 +60,40 @@
 
         google.maps.event.addDomListener(window, 'load', initialize);
 
+    var places = [
+        {
+            'name':'senior care',
+            'lat': 67,
+            'Lng':76
+            },
+        {
+            'name':'swimming pool',
+            'lat':45,
+            'Lng':-20
+            },
+        {
+            'name':'park',
+            'lat':120,
+            'Lng':80
+            }
+    ];
 
-        ko.applyBindings(new ViewModel());
+var ViewModel = function() {
+  var self = this;
+
+  self.placeList = ko.observableArray(places);
+
+  self.query = ko.observable('');
+
+  self.search = ko.computed(function(){
+    return ko.utils.arrayFilter(self.placeList(), function(place){
+      return place.name.toLowerCase().indexOf(self.query().toLowerCase()) >= 0;
+    });
+  });
+};
+
+ko.applyBindings(new ViewModel());
+
     </script>
   </body>
 </html>
