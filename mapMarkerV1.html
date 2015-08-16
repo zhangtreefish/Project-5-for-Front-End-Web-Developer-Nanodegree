@@ -19,11 +19,11 @@
     <div id="map"></div>
 <input data-bind="value: Lat" />
 <input data-bind="value: Lng" />
-<div data-bind="latitude: viewModel.Lat, longitude:viewModel.Lng, map:map" ></div>
+<div data-bind="latitude: viewModel.Lat, longitude:viewModel.Lng, map:map1" ></div>
 
     <script type='text/javascript'>
     //global for map
-var map;
+var map1;
 
 $(document).ready(function () {
 
@@ -69,10 +69,10 @@ function MyViewModel() {
     var elevator;
    var myOptions = {
         zoom: 3,
-        center: new google.maps.LatLng(12.24, 24.54),
+        center: new google.maps.LatLng(56, -90),
         mapTypeId: 'terrain'
     };
-    map = new google.maps.Map($('#map')[0], myOptions);
+    map1 = new google.maps.Map($('#map')[0], myOptions);
 }
 
 ko.bindingHandlers.map = {
