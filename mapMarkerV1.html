@@ -17,9 +17,8 @@
   </head>
   <body>
     <div id="map"></div>
-<input data-bind="value: Lat" />
-<input data-bind="value: Lng" />
-<div data-bind="latitude: viewModel.placeList()[0].lat, longitude:viewModel.placeList()[0].lon, map:map1" >
+
+<div data-bind="latitude: viewModel.placeList()[2].lat, longitude:viewModel.placeList()[2].lon, map:map1" >
 
 </div>
 <div class="place-list">
@@ -53,8 +52,8 @@ var initialPlaces = [
             },
             {
                 name:'park',
-                lat:"29.4",
-                lng:"-98.3"
+                lat:"-29.4",
+                lng:"98.3"
             }
         ];
 var Place = function(data) {
@@ -94,18 +93,18 @@ ko.bindingHandlers.map = {
                 var position = new google.maps.LatLng(allBindingsAccessor().latitude(), allBindingsAccessor().longitude());
 
                 var marker = new google.maps.Marker({
-                    map: allBindingsAccessor().map,
+                    //map: allBindingsAccessor().map,
                     position: position,
                     title: name
                 });
-
-                viewModel._mapMarker = marker;
-            },
-            update: function (element, valueAccessor, allBindingsAccessor, viewModel) {
-                var latlng = new google.maps.LatLng(allBindingsAccessor().latitude(), allBindingsAccessor().longitude());
-                viewModel._mapMarker.setPosition(latlng);
-
+                marker.setMap(map1);
+                //viewModel._mapMarker = marker;
             }
+            //update: function (element, valueAccessor, allBindingsAccessor, viewModel) {
+              //  var latlng = new google.maps.LatLng(allBindingsAccessor().latitude(), allBindingsAccessor().longitude());
+               // viewModel._mapMarker.setPosition(latlng);
+
+            //}
         };
 
 
