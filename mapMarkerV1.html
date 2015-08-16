@@ -19,7 +19,7 @@
     <div id="map"></div>
 <input data-bind="value: Lat" />
 <input data-bind="value: Lng" />
-<div data-bind="latitude: viewModel.Lat, longitude:viewModel.Lng, map:map1" >
+<div data-bind="latitude: viewModel.placeList()[0].lat, longitude:viewModel.placeList()[0].lon, map:map1" >
 
 </div>
 <div class="place-list">
@@ -43,7 +43,7 @@ $(document).ready(function () {
 var initialPlaces = [
             {
                 name:'senior care',
-                lat:"29.1",
+                lat:"59.1",
                 lng:"-98.6"
             },
             {
@@ -63,6 +63,7 @@ var Place = function(data) {
             this.lon = ko.observable(data.lng);
         };
 
+//the ViewModel!
 function MyViewModel() {
     var self = this;
     self.Lat = ko.observable('');
@@ -71,6 +72,9 @@ function MyViewModel() {
     initialPlaces.forEach(function(placeEl) {
         self.placeList.push(new Place(placeEl));
     });
+    //console.log(this.placeList[0].lat);
+    //self.Lat = self.placeList()[0].lat;
+    //self.Lng = self.placeList()[0].lon;
 }
 
     function createMap(){
@@ -106,6 +110,7 @@ ko.bindingHandlers.map = {
 
 
 var viewModel = new MyViewModel();
+
 
     </script>
   </body>
