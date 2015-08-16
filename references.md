@@ -7,8 +7,12 @@
 7. more on ko implementation of google Maps: http://www.codeproject.com/Articles/351298/KnockoutJS-and-Google-Maps-binding
 8. An app using ko and google maps:http://www.codeproject.com/Articles/387626/BikeInCity-KnockoutJS-JQuery-Google-Maps
 9. custom binding issue:http://stackoverflow.com/questions/15545547/custom-binding-valueaccessor-has-unexpected-result
-10. https://github.com/eelomar/P5-Neighborhod
+1
 11.https://github.com/parachaz/P5NeighborhoodMap
 12. https://github.com/cookiewang/udcity_front_end_web_project_5
 13: knockout live search: https://gist.github.com/hinchley/5973926
 14: live search: https://gist.github.com/hinchley/5973926
+15: jQuery before Bootstrap: http://stackoverflow.com/questions/22658015/bootstrap-wont-detect-jquery-1-11-0-uncaught-error-bootstraps-javascript-re
+16: map marker: http://www.codeproject.com/Articles/351298/KnockoutJS-and-Google-Maps-binding
+17: https://github.com/justkaran/udproject5/blob/master/js/main.js
+18: on Yelp: https://www.yelp.com/developers/documentation/v2/search_api
