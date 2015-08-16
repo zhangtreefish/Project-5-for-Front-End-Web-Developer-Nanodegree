@@ -19,8 +19,16 @@
     <div id="map"></div>
 <input data-bind="value: Lat" />
 <input data-bind="value: Lng" />
-<div data-bind="latitude: viewModel.Lat, longitude:viewModel.Lng, map:map1" ></div>
+<div data-bind="latitude: viewModel.Lat, longitude:viewModel.Lng, map:map1" >
 
+</div>
+<div class="place-list">
+<ul data-bind="foreach:placeList">
+        <li data-bind="text:name"></li>
+        <li data-bind="text:lat"></li>
+        <li data-bind="text:lon"></li>
+</ul>
+</div>
     <script type='text/javascript'>
     //global for map
 var map1;
