@@ -82,6 +82,13 @@
                 //self.Lng = self.placeList()[0].lon;
             }
 
+            //TODO:function createContent(name,address) {};
+            var contentString =
+                '<div id="content">'+
+                    '<div id="siteNotice">'+'</div>'+
+                    '<h1 id="firstHeading" class="firstHeading">Uluru</h1>'+
+                '</div>';
+
             function createMap(){
                 var myOptions = {
                     zoom: 3,
@@ -103,10 +110,8 @@
                     //viewModel._mapMarker = marker;
 
                     //content for the info window
-                    var contentString = '<div id="content">'+
-                                            '<div id="siteNotice">'+'</div>'+
-                                            '<h1 id="firstHeading" class="firstHeading">Uluru</h1>'+
-                                        '</div>';
+
+                    //TODO:infowindow.setContent(createContent(marker.name, marker.address));
 
                     //create and show info window
                     var infowindow = new google.maps.InfoWindow({
