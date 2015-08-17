@@ -1,117 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title> San Antonio Senior Homes </title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        #map{
-        width: 300px;
-        height: 300px;
-    }
-    </style>
-    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    <script type="text/javascript"
-     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAt9NmLDjWl_kQngI0jq0BPA3QUXuMQM_I"></script>
-    <script src="js/lib/knockout-3.2.0.js"></script>
-  </head>
-  <body>
-    <div id="map"></div>
+    <head>
+        <title> San Antonio Senior Homes </title>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            #map{
+            width: 300px;
+            height: 300px;
+        }
+        </style>
+        <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+        <script type="text/javascript"
+         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAt9NmLDjWl_kQngI0jq0BPA3QUXuMQM_I"></script>
+        <script src="js/lib/knockout-3.2.0.js"></script>
+    </head>
+    <body>
+        <div id="map"></div>
+            <!--display the markers-->
+            <div data-bind="latitude: viewModel.placeList()[2].lat, longitude:viewModel.placeList()[2].lon, mapMarker:map1" >
+            </div>
+            <div data-bind="latitude: viewModel.placeList()[0].lat, longitude:viewModel.placeList()[0].lon, mapMarker:map1" >
+            </div>
+            <div data-bind="latitude: viewModel.placeList()[1].lat, longitude:viewModel.placeList()[1].lon, mapMarker:map1" >
+            </div>
 
-<div data-bind="latitude: viewModel.placeList()[2].lat, longitude:viewModel.placeList()[2].lon, map:map1" >
-</div>
-<div data-bind="latitude: viewModel.placeList()[1].lat, longitude:viewModel.placeList()[1].lon, map:map1" >
-</div>
-<div class="place-list">
-<ul data-bind="foreach:placeList">
-        <li data-bind="text:name"></li>
-        <li data-bind="text:lat"></li>
-        <li data-bind="text:lon"></li>
-</ul>
-</div>
-    <script type='text/javascript'>
-    //global for map
-var map1;
+        <div class="place-list">
+            <ul data-bind="foreach:placeList">
+                <li data-bind="text:name"></li>
+                <li data-bind="text:lat"></li>
+                <li data-bind="text:lon"></li>
+                <li data-bind="latitude: lat, longitude:lon, mapMarker:map1"></li>
+            </ul>
+        </div>
 
-$(document).ready(function () {
+        <script type='text/javascript'>
+        //global for map
+            var map1;
 
-   createMap();
-   ko.applyBindings(viewModel);
-});
+            $(document).ready(function () {
+               createMap();
+                ko.applyBindings(viewModel);
+            });
 
-//add the data to be used for generating map markers
-var initialPlaces = [
-            {
-                name:'senior care',
-                lat:"59.1",
-                lng:"-98.6"
-            },
-            {
-                name:'swimming pool',
-                lat:"29.0",
-                lng:"-98.4"
-            },
-            {
-                name:'park',
-                lat:"-29.4",
-                lng:"98.3"
-            }
-        ];
-var Place = function(data) {
-            this.name = ko.observable(data.name);
-            this.lat = ko.observable(data.lat);
-            this.lon = ko.observable(data.lng);
-        };
+            //add the data to be used for generating map markers
+            var initialPlaces = [
+                {
+                    name:'Beijing senior care',
+                    lat:"40",
+                    lng:"116"
+                },
+                {
+                    name:'SA swimming pool',
+                    lat:"29.0",
+                    lng:"-98.4"
+                },
+                {
+                    name:'Sydney park',
+                    lat:"-34",
+                    lng:"151"
+                }
+            ];
 
-//the ViewModel!
-function MyViewModel() {
-    var self = this;
-    self.Lat = ko.observable('');
-    self.Lng = ko.observable('');
-    self.placeList=ko.observableArray([]);
-    initialPlaces.forEach(function(placeEl) {
-        self.placeList.push(new Place(placeEl));
-    });
-    //console.log(this.placeList[0].lat);
-    //self.Lat = self.placeList()[0].lat;
-    //self.Lng = self.placeList()[0].lon;
-}
+            var Place = function(data) {
+                this.name = ko.observable(data.name);
+                this.lat = ko.observable(data.lat);
+                this.lon = ko.observable(data.lng);
+            };
 
-    function createMap(){
-    var elevator;
-   var myOptions = {
-        zoom: 3,
-        center: new google.maps.LatLng(56, -90),
-        mapTypeId: 'terrain'
-    };
-    map1 = new google.maps.Map($('#map')[0], myOptions);
-}
-
-ko.bindingHandlers.map = {
-            init: function (element, valueAccessor, allBindingsAccessor, viewModel) {
-
-
-                var position = new google.maps.LatLng(allBindingsAccessor().latitude(), allBindingsAccessor().longitude());
-
-                var marker = new google.maps.Marker({
-                    //map: allBindingsAccessor().map,
-                    position: position,
-                    title: name
+            //the ViewModel!
+            function MyViewModel() {
+                var self = this;
+                self.Lat = ko.observable('');
+                self.Lng = ko.observable('');
+                self.placeList=ko.observableArray([]);
+                initialPlaces.forEach(function(placeEl) {
+                    self.placeList.push(new Place(placeEl));
                 });
-                marker.setMap(map1);
-                //viewModel._mapMarker = marker;
+                //console.log(this.placeList[0].lat);
+                //self.Lat = self.placeList()[0].lat;
+                //self.Lng = self.placeList()[0].lon;
             }
-            //update: function (element, valueAccessor, allBindingsAccessor, viewModel) {
-              //  var latlng = new google.maps.LatLng(allBindingsAccessor().latitude(), allBindingsAccessor().longitude());
-               // viewModel._mapMarker.setPosition(latlng);
 
-            //}
-        };
+            function createMap(){
+                var myOptions = {
+                    zoom: 3,
+                    center: new google.maps.LatLng(29, -98),
+                    mapTypeId: 'terrain'
+                };
+                map1 = new google.maps.Map($('#map')[0], myOptions);
+            }
 
+            ko.bindingHandlers.mapMarker = {
+                init: function (element, valueAccessor, allBindingsAccessor, viewModel) {
+                    var position = new google.maps.LatLng(allBindingsAccessor().latitude(), allBindingsAccessor().longitude());
 
-var viewModel = new MyViewModel();
+                    var marker = new google.maps.Marker({
+                        position: position,
+                        title: name
+                    });
+                    marker.setMap(map1);//alternative:in marker construction, include:map: allBindingsAccessor().map
+                    //viewModel._mapMarker = marker;
 
+                    //content for the info window
+                    var contentString = '<div id="content">'+
+                                            '<div id="siteNotice">'+'</div>'+
+                                            '<h1 id="firstHeading" class="firstHeading">Uluru</h1>'+
+                                        '</div>';
 
-    </script>
-  </body>
+                    //create and show info window
+                    var infowindow = new google.maps.InfoWindow({
+                        content: contentString
+                    });
+
+                    marker.addListener('click', function() {
+                        infowindow.open(map1, marker);
+                    });
+                }
+                //update: function (element, valueAccessor, allBindingsAccessor, viewModel) {
+                  //  var latlng = new google.maps.LatLng(allBindingsAccessor().latitude(), allBindingsAccessor().longitude());
+                   // viewModel._mapMarker.setPosition(latlng);
+                //}
+            };
+
+            var viewModel = new MyViewModel();
+
+        </script>
+    </body>
 </html>
