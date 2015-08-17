@@ -17,21 +17,14 @@
     </head>
     <body>
         <div id="map"></div>
-            <!--display the markers-->
-            <div data-bind="latitude: viewModel.placeList()[2].lat, longitude:viewModel.placeList()[2].lon, mapMarker:map1" >
-            </div>
-            <div data-bind="latitude: viewModel.placeList()[0].lat, longitude:viewModel.placeList()[0].lon, mapMarker:map1" >
-            </div>
-            <div data-bind="latitude: viewModel.placeList()[1].lat, longitude:viewModel.placeList()[1].lon, mapMarker:map1" >
-            </div>
 
         <div class="place-list">
-            <ul data-bind="foreach:placeList">
-                <li data-bind="text:name"></li>
-                <li data-bind="text:lat"></li>
-                <li data-bind="text:lon"></li>
-                <li data-bind="latitude: lat, longitude:lon, mapMarker:map1"></li>
-            </ul>
+            <div data-bind="foreach:placeList">
+                <div data-bind="text:name"></div>
+                <div data-bind="text:lat"></div>
+                <div data-bind="text:lon"></div>
+                <div data-bind="latitude: lat, longitude:lon, mapMarker:map1"></div>
+            </div>
         </div>
 
         <script type='text/javascript'>
@@ -59,7 +52,13 @@
                     name:'Sydney park',
                     lat:"-34",
                     lng:"151"
+                },
+                {
+                    name:'NewYork park',
+                    lat:"41",
+                    lng:"74"
                 }
+
             ];
 
             var Place = function(data) {
