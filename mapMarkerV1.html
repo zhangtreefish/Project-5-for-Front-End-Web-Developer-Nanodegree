@@ -94,7 +94,7 @@
                     center: new google.maps.LatLng(29, -98),
                     mapTypeId: 'terrain'
                 };
-                map1 = new google.maps.Map($('#map')[0], myOptions);
+                map = new google.maps.Map($('#map')[0], myOptions);
             }
 
             ko.bindingHandlers.mapMarker = {
@@ -105,7 +105,7 @@
                         position: position,
                         title: name
                     });
-                    marker.setMap(map1);//alternative:in marker construction, include:map: allBindingsAccessor().map
+                    marker.setMap(map);//alternative:in marker construction, include:map: allBindingsAccessor().map
                     //viewModel._mapMarker = marker;
 
                     //content for the info window
@@ -118,7 +118,7 @@
                     });
 
                     marker.addListener('click', function() {
-                        infowindow.open(map1, marker);
+                        infowindow.open(map, marker);
                     });
                 }
                 //update: function (element, valueAccessor, allBindingsAccessor, viewModel) {
