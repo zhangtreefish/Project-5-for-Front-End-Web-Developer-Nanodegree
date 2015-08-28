@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title> San Antonio Senior Homes </title>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            #map{
+            width: 300px;
+            height: 300px;
+        }
+        </style>
+        <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+        <script type="text/javascript"
+         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAt9NmLDjWl_kQngI0jq0BPA3QUXuMQM_I"></script>
+        <script src="js/lib/knockout-3.2.0.js"></script>
+    </head>
+    <body>
+        <div id="map"></div>
+
+        <div class="place-list">
+            <div data-bind="foreach:placeList">
+                <div data-bind="text:name"></div>
+                <div data-bind="text:lat"></div>
+                <div data-bind="text:lon"></div>
+            </div>
+        </div>
+
+        <script type='text/javascript'>
+            $(function() {
+                //global for map
+                var map1;
+                function createMap(){
+                    var myOptions = {
+                        zoom: 3,
+                        center: new google.maps.LatLng(29, -98),
+                        mapTypeId: 'terrain'
+                    };
+                    map1 = new google.maps.Map($('#map')[0], myOptions);
+                }
+                createMap();
+
+                //add the data to be used for generating map markers
+                var initialPlaces = [
+                    {
+                        name:'Beijing senior care',
+                        lat:40,
+                        lng:116
+                    }
+                ];
+
+                var Place = function(data) {
+                    this.name = ko.observable(data.name);
+                    this.lat = ko.observable(data.lat);
+                    this.lon = ko.observable(data.lng);
+                };
+
+                function MyViewModel() {
+                    var self = this;
+                    // self.Lat = ko.observable('');
+                    // self.Lng = ko.observable('');
+                    self.placeList=ko.observableArray([]);
+
+                    //construct placeList to set up for binding
+                    initialPlaces.forEach(function(placeEl) {
+                        self.placeList.push(new Place(placeEl));
+                    });
+                    console.log(self.placeList()[0].lat());
+
+                    //insert marker per suggestion of mcs
+                    self.placeList().map(function(currentValue, index, array) {
+                      var markerObject = {};
+
+                      markerObject.position = {lat: currentValue.lat(), lng: currentValue.lon()}
+                      markerObject.map = map1;
+
+                      array[index].marker = new google.maps.Marker(markerObject);
+                    });
+                };
+
+                var viewModel = new MyViewModel();
+                ko.applyBindings(viewModel);
+            });
+        </script>
+    </body>
+</html>
