@@ -1,96 +1,130 @@
-<html>
-<head>
-<title>Yelp OAuth Example</title>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
-<script src="js/lib/knockout-3.2.0.js"></script>
-<script type="text/javascript" src="http://oauth.googlecode.com/svn/code/javascript/oauth.js"></script>
-<script type="text/javascript" src="http://oauth.googlecode.com/svn/code/javascript/sha1.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Yelp OAuth Example</title>
 
+    <!-- essential to show map:  -->
+    <style>
+      #map{
+        width: 300px;
+        height: 300px;
+      }
+    </style>
 
-<!-- // var OAuth   = require('oauth-1.0a'); -->
-</head>
-<body>
-  <div data-bind="foreach:$root.placeList()">
-    <div data-bind="text:name()">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+    <script type="text/javascript"
+             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAt9NmLDjWl_kQngI0jq0BPA3QUXuMQM_I"></script>
+    <script src="js/lib/knockout-3.2.0.js"></script>
+    <script type="text/javascript" src="http://oauth.googlecode.com/svn/code/javascript/oauth.js"></script>
+    <script type="text/javascript" src="http://oauth.googlecode.com/svn/code/javascript/sha1.js"></script>
+  </head>
+
+  <body>
+    <div id="map"></div>
+    <div data-bind="foreach:$root.placeList()">
+      <div data-bind="text:name()">
+      </div>
+      <div class="coords">
+      </div>
     </div>
-    <div class="coords"></div>
-  </div>
-<script type="text/javascript">
-var Place = function(data) {
-                    this.name = ko.observable(data.name);
-                    this.lat = data.location.coordinate.latitude;
-                    this.lon = data.location.coordinate.longitude;
-                };
 
-function MyViewModel() {
-  var self = this;
-  // self.Lat = ko.observable('');
-  // self.Lng = ko.observable('');
-  self.placeList=ko.observableArray([]);
+    <script type="text/javascript">
+      $(function() {
+        //create a global map named map1 for later addition of markers
+        var map1;
+        function createMap(){
+          var myOptions = {
+              zoom: 10,
+              center: new google.maps.LatLng(29.54, -98.51),
+              mapTypeId: 'terrain'
+          };
+          map1 = new google.maps.Map($('#map')[0], myOptions);
+        };
+        createMap();
 
-  var auth = {
-  //
-  // Update with your auth tokens.
-  //
-  consumerKey: "vJDdZm0QvnzPtjptn4BqSQ",
-  consumerSecret: "18nkUx80NEC6qnpQILDZwOfoXgY",
-  accessToken: "LTpWUkoGmR443wsVqCuTC_p0RRxwV2Cs",
-  // This example is a proof of concept, for how to use the Yelp v2 API with javascript.
-  // You wouldn't actually want to expose your access token secret like this in a real application.
-  accessTokenSecret: "zdDqJZMrhjwQJXqjQYfPYu3vCcw",
-  serviceProvider: {
-    signatureMethod: "HMAC-SHA1"
-  }
-};
-var terms = 'retirement homes';
-var near = 'San+Antonio';
-var accessor = {
-  consumerSecret: auth.consumerSecret,
-  tokenSecret: auth.accessTokenSecret
-};
-parameters = [];
-parameters.push(['term', terms]);
-parameters.push(['limit', 5]);
-parameters.push(['location', near]);
-parameters.push(['callback', 'cb']);
-parameters.push(['oauth_consumer_key', auth.consumerKey]);
-parameters.push(['oauth_consumer_secret', auth.consumerSecret]);
-parameters.push(['oauth_token', auth.accessToken]);
-parameters.push(['oauth_signature_method', 'HMAC-SHA1']);
-var message = {
-  'action': 'http://api.yelp.com/v2/search',
-  'method': 'GET',
-  'parameters': parameters
-};
-OAuth.setTimestampAndNonce(message);
-OAuth.SignatureMethod.sign(message, accessor);
-var parameterMap = OAuth.getParameterMap(message.parameters);
-parameterMap.oauth_signature = OAuth.percentEncode(parameterMap.oauth_signature)
-console.log(parameterMap);
+        //set up a class called Place for later construction of place objects
+        var Place = function(data) {
+          this.name = ko.observable(data.name);
+          this.lat = ko.observable(data.location.coordinate.latitude);
+          this.lon = ko.observable(data.location.coordinate.longitude);
+        };
 
-$.ajax({
-  'url': message.action,
-  'data': parameterMap,
-  'cache': true,
-  'dataType': 'jsonp',
-  'jsonpCallback': 'cb',
-  'success':function(data) {
-  // function(data, textStats, XMLHttpRequest) {
-  //   console.log(data);
-    data.businesses.forEach(function(business) {
-                    self.placeList.push(new Place(business));//process your data here
-                    console.log(business.location.coordinate, business.name);
-                    console.log("here"+self.placeList()[0].name());
-                    // $('.coords').append('<div>'+business.location.coordinate.latitude+'</div>');
-                });
+        function MyViewModel() {
+          var self = this;
 
-  }
-})
-}
-var viewModel = new MyViewModel();
-ko.applyBindings(viewModel);
-</script>
+          self.placeList=ko.observableArray([]);
 
+          //set up auth tokens
+          var auth = {
+            consumerKey: "vJDdZm0QvnzPtjptn4BqSQ",
+            consumerSecret: "18nkUx80NEC6qnpQILDZwOfoXgY",
+            accessToken: "LTpWUkoGmR443wsVqCuTC_p0RRxwV2Cs",
+            accessTokenSecret: "zdDqJZMrhjwQJXqjQYfPYu3vCcw",
+            serviceProvider: {
+              signatureMethod: "HMAC-SHA1"
+            }
+          };
 
-</body>
+          var accessor = {
+            consumerSecret: auth.consumerSecret,
+            tokenSecret: auth.accessTokenSecret
+          };
+
+          //set up the query
+          var terms = 'retirement homes';
+          var near = 'San+Antonio';
+
+          parameters = [];
+          parameters.push(['term', terms]);
+          parameters.push(['location', near]);
+          parameters.push(['limit', 5]);
+          parameters.push(['callback', 'cb']);
+          parameters.push(['oauth_consumer_key', auth.consumerKey]);
+          parameters.push(['oauth_consumer_secret', auth.consumerSecret]);
+          parameters.push(['oauth_token', auth.accessToken]);
+          parameters.push(['oauth_signature_method', 'HMAC-SHA1']);
+
+          var message = {
+            'action': 'http://api.yelp.com/v2/search',
+            'method': 'GET',
+            'parameters': parameters
+          };
+
+          OAuth.setTimestampAndNonce(message);
+          OAuth.SignatureMethod.sign(message, accessor);
+          var parameterMap = OAuth.getParameterMap(message.parameters);
+          parameterMap.oauth_signature = OAuth.percentEncode(parameterMap.oauth_signature)
+          // console.log(parameterMap);this works
+
+          $.ajax({
+            'url': message.action,
+            'data': parameterMap,
+            'cache': true,
+            'dataType': 'jsonp',
+            'jsonpCallback': 'cb',
+            'success':function(data) {
+              data.businesses.forEach(function(business) {
+                self.placeList().push(new Place(business));
+
+                //insert marker with view model instead of custom binding per suggestion of Udacity stuent leader mcs
+                self.placeList().map(function(currentValue, index, array) {
+                  var markerObject = {};
+
+                  markerObject.position = {lat: currentValue.lat(), lng: currentValue.lon()};
+                  markerObject.map = map1;
+
+                  array[index].marker = new google.maps.Marker(markerObject);
+                });//map
+                // console.log(business.location.coordinate, business.name);
+                // console.log("here"+self.placeList()[0].name());
+              });
+            }//success
+          });//.ajax
+        };//MyViewModel
+
+        var viewModel = new MyViewModel();
+        ko.applyBindings(viewModel);
+      });
+    </script>
+  </body>
 </html>
