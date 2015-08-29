@@ -16,3 +16,11 @@
 16: map marker: http://www.codeproject.com/Articles/351298/KnockoutJS-and-Google-Maps-binding
 17: https://github.com/justkaran/udproject5/blob/master/js/main.js
 18: on Yelp: https://www.yelp.com/developers/documentation/v2/search_api
+19: custon binding in ko: http://www.knockmeout.net/2011/07/another-look-at-custom-bindings-for.html
+20: getting a cerain version of a file from a past commit: http://angry-fly.com/2011/11/pulling-specific-files-from-a-commit-using-git/
+21: John's awesome search method: http://codepen.io/JohnMav/pen/OVEzWM
+22: on map marker: https://developers.google.com/maps/documentation/javascript/markers
+23. Difference Between jQuery and AJAX:http://www.differencebetween.net/technology/difference-between-jquery-and-ajax/
+24. .ajax: https://github.com/ddo/oauth-1.0a
+25. Yelp API console where I got data for San Antonio retirement home: https://www.yelp.com/developers/api_console
+26: this Yelp link has code that works: http://forums.asp.net/t/1801674.aspx?how+to+create+API+URL+using+some+credentials
