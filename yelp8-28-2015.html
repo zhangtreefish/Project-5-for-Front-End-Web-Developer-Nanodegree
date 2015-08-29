@@ -34,8 +34,8 @@
 
           <div id="list-view" class="col-md-4">
               <h2>List View</h2>
-              <ul data-bind="foreach: search()">
-                <li data-bind="text:name()"></li>
+              <ul data-bind="foreach: $root.placeList()">
+                <li data-bind="text:name"></li>
               </ul>
             </div>
 
@@ -81,11 +81,7 @@
           self.query = ko.observable('');
           self.placeList=ko.observableArray([]);
 
-          self.search = ko.computed(function(){
-            return ko.utils.arrayFilter(self.placeList(), function(place){
-              return place.name.toLowerCase().indexOf(self.query().toLowerCase()) >= 0;
-            });
-          });
+
 
           //set up auth tokens
           var auth = {
@@ -154,7 +150,11 @@
             }//success
           });//.ajax
         };//MyViewModel
-
+self.search = ko.computed(function(){
+            return ko.utils.arrayFilter(self.placeList(), function(place){
+              return place.name.toLowerCase().indexOf(self.query().toLowerCase()) >= 0;
+            });
+          });
         var viewModel = new MyViewModel();
         ko.applyBindings(viewModel);
       });
