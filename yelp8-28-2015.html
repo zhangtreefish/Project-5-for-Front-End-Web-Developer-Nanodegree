@@ -2,10 +2,33 @@
 <head>
 <title>Yelp OAuth Example</title>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+<script src="js/lib/knockout-3.2.0.js"></script>
 <script type="text/javascript" src="http://oauth.googlecode.com/svn/code/javascript/oauth.js"></script>
 <script type="text/javascript" src="http://oauth.googlecode.com/svn/code/javascript/sha1.js"></script>
+
+
+<!-- // var OAuth   = require('oauth-1.0a'); -->
+</head>
+<body>
+  <div data-bind="foreach:$root.placeList()">
+    <div data-bind="text:name()">
+    </div>
+    <div class="coords"></div>
+  </div>
 <script type="text/javascript">
-var auth = {
+var Place = function(data) {
+                    this.name = ko.observable(data.name);
+                    this.lat = data.location.coordinate.latitude;
+                    this.lon = data.location.coordinate.longitude;
+                };
+
+function MyViewModel() {
+  var self = this;
+  // self.Lat = ko.observable('');
+  // self.Lng = ko.observable('');
+  self.placeList=ko.observableArray([]);
+
+  var auth = {
   //
   // Update with your auth tokens.
   //
@@ -44,7 +67,7 @@ OAuth.SignatureMethod.sign(message, accessor);
 var parameterMap = OAuth.getParameterMap(message.parameters);
 parameterMap.oauth_signature = OAuth.percentEncode(parameterMap.oauth_signature)
 console.log(parameterMap);
-var yelpPlaces = [];
+
 $.ajax({
   'url': message.action,
   'data': parameterMap,
@@ -55,15 +78,19 @@ $.ajax({
   // function(data, textStats, XMLHttpRequest) {
   //   console.log(data);
     data.businesses.forEach(function(business) {
-                    yelpPlaces.push(business.location.coordinate);//process your data here
-                    console.log(business.location.coordinate);
-                    $('body').append('<div>'+business.location.coordinate.latitude+'</div>');
+                    self.placeList.push(new Place(business));//process your data here
+                    console.log(business.location.coordinate, business.name);
+                    console.log("here"+self.placeList()[0].name());
+                    // $('.coords').append('<div>'+business.location.coordinate.latitude+'</div>');
                 });
 
   }
-});
+})
+}
+var viewModel = new MyViewModel();
+ko.applyBindings(viewModel);
 </script>
-</head>
-<body>
+
+
 </body>
 </html>
