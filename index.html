@@ -34,8 +34,8 @@
 
           <div id="list-view" class="col-md-4">
               <h2>List View</h2>
-              <ul data-bind="foreach:  { data: search(), as: 'place' }">
-                <li data-bind="text:place.name"></li>
+              <ul data-bind="foreach: searchResults()">
+                <li data-bind="name"></li>
               </ul>
           </div>
 
@@ -127,7 +127,7 @@
                 self.placeList().push(new Place(business));
 
                 //call live update of the list here
-                self.search();
+                self.searchResults();
               });//push
 
               //call showMarker here
@@ -147,18 +147,18 @@
             });//map
           };
 
-          //search has to be placed near the end
-          self.search= ko.computed(function(){
-              return ko.utils.arrayFilter(self.placeList(), function(place){
-                return place.name().toLowerCase().indexOf(self.query().toLowerCase()) >= 0;
-                console.log(index+self.placeList()[index].name());//does not work
-              });
+          //the live filtering function has to be placed near the end; use a search variable for better performance per suggestion of Karol from Udacity forum
+          self.searchResults = ko.computed(function(){
+            var search = self.query().toLowerCase();
+            return ko.utils.arrayFilter(self.placeList(), function(place){
+               return place.name().toLowerCase().indexOf(search) >= 0;
             });
+          });
 
         };//MyViewModel
 
         var viewModel = new MyViewModel();
-        viewModel.query.subscribe(viewModel.search);
+        viewModel.query.subscribe(viewModel.searchResults);
         ko.applyBindings(viewModel);//TODO: the binding is not happening?!
       });
     </script>
