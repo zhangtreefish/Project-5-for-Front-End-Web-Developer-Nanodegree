@@ -1,0 +1,169 @@
+<!-- This is to find out what broke the data-bind. I will strip elements sequentially fo pinpoint the cause. --><!-- step 1: remove search, use placeList() -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Yelp OAuth Example</title>
+
+    <!-- essential to show map:  -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+      html, body, #map { height: 100%; margin: 0; padding: 0;}
+      #map{
+        width: 300px;
+        height: 300px;
+      }
+      #list-view {height:300px}
+      .list {
+        border:1px solid red;
+        height: 120px;
+      }
+    </style>
+
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAt9NmLDjWl_kQngI0jq0BPA3QUXuMQM_I"></script>
+    <script src="js/lib/knockout-3.2.0.js"></script>
+    <script src="http://oauth.googlecode.com/svn/code/javascript/oauth.js"></script>
+    <script src="http://oauth.googlecode.com/svn/code/javascript/sha1.js"></script>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="row">
+          <h1> San Antonio Retirement Homes </h1>
+          <div class="col-md-4">
+              <h2>Search Bar</h2>
+              <!-- <input id="search" type="search" placeholder="San Antonio retirement homes" name="q" data-bind="textInput: query" autocomplete="off"> step1-->
+
+              <h2>List View</h2>
+              <ul class="list" data-bind="foreach: placeList()">
+                <li data-bind="text:name"></li>
+              </ul>
+          </div>
+
+          <div class="col-md-4">
+              <h2>Map</h2>
+              <div id="map"></div>
+          </div>
+    </div>
+
+    <script type="text/javascript">
+      $(function() {
+        //create a global map named map1 for later addition of markers
+        var map1;
+        function createMap(){
+          var myOptions = {
+              zoom: 10,
+              center: new google.maps.LatLng(29.54, -98.51),
+              mapTypeId: 'terrain'
+          };
+          map1 = new google.maps.Map($('#map')[0], myOptions);
+        };
+        createMap();
+
+        //set up a class called Place for later construction of place objects; it is essential to declare name
+        //as ko.observable since we want to display the names; it is the same with lat and lon since we want to display the markers, a derivative of lat and lon; if lat and lon are not declared ko.observable, the markers would not show up.
+        var Place = function(data) {
+          this.name = ko.observable(data.name);
+          this.lat = ko.observable(data.location.coordinate.latitude);
+          this.lon = ko.observable(data.location.coordinate.longitude);
+          this.marker = {};
+        };
+
+        //set up auth tokens
+        var auth = {
+          consumerKey: "vJDdZm0QvnzPtjptn4BqSQ",
+          consumerSecret: "18nkUx80NEC6qnpQILDZwOfoXgY",
+          accessToken: "LTpWUkoGmR443wsVqCuTC_p0RRxwV2Cs",
+          accessTokenSecret: "zdDqJZMrhjwQJXqjQYfPYu3vCcw",
+          serviceProvider: {
+            signatureMethod: "HMAC-SHA1"
+          }
+        };
+
+        var accessor = {
+          consumerSecret: auth.consumerSecret,
+          tokenSecret: auth.accessTokenSecret
+        };
+
+        //set up the query
+        var terms = 'retirement homes';
+        var near = 'San+Antonio';
+
+        parameters = [];
+        parameters.push(['term', terms]);
+        parameters.push(['location', near]);
+        parameters.push(['limit', 5]);
+        parameters.push(['callback', 'cb']);
+        parameters.push(['oauth_consumer_key', auth.consumerKey]);
+        parameters.push(['oauth_consumer_secret', auth.consumerSecret]);
+        parameters.push(['oauth_token', auth.accessToken]);
+        parameters.push(['oauth_signature_method', 'HMAC-SHA1']);
+
+        var message = {
+          'action': 'http://api.yelp.com/v2/search',
+          'method': 'GET',
+          'parameters': parameters
+        };
+
+        OAuth.setTimestampAndNonce(message);
+        OAuth.SignatureMethod.sign(message, accessor);
+        var parameterMap = OAuth.getParameterMap(message.parameters);
+        parameterMap.oauth_signature = OAuth.percentEncode(parameterMap.oauth_signature);
+        // console.log(parameterMap);this works
+
+        function MyViewModel() {
+          var self = this;
+
+          self.query = ko.observable('');
+          self.placeList = ko.observableArray([]);
+
+          $.ajax({
+            'url': message.action,
+            'data': parameterMap,
+            'cache': true,
+            'dataType': 'jsonp',
+            'jsonpCallback': 'cb',
+            'success':function(data) {
+              data.businesses.forEach(function(business) {
+                self.placeList().push(new Place(business));
+
+                //call live update of the list here
+                // self.searchResults();step1
+              });//push
+
+              //call showMarker here
+              self.showMarker(self.placeList());
+            }//success
+          });//.ajax
+
+          //insert marker with view model instead of custom binding per suggestion of Udacity stuent leader mcs
+          self.showMarker = function(anArray) {
+            anArray.map(function(currentValue, index, array) {
+              var markerObject = {};
+              markerObject.position = {lat: currentValue.lat(), lng: currentValue.lon()};
+              markerObject.map = map1;
+
+              array[index].marker = new google.maps.Marker(markerObject);
+              // console.log(index+self.placeList()[index].name());//this works
+            });//map
+          };
+
+          //the live filtering function has to be placed near the end; use a search variable for better performance per suggestion of Karol from Udacity forum
+          // self.searchResults = ko.computed(function(){
+          //   var search = self.query().toLowerCase();
+          //   return ko.utils.arrayFilter(self.placeList(), function(place){
+          //      return place.name().toLowerCase().indexOf(search) >= 0;
+          //   });
+          // });step1
+
+        };//MyViewModel
+
+        var viewModel = new MyViewModel();
+        // viewModel.query.subscribe(viewModel.searchResults);step1
+        ko.applyBindings(viewModel);//TODO: the binding is not happening?!
+      });
+    </script>
+  </body>
+</html>
