@@ -1,4 +1,5 @@
-<!-- This is to find out what broke the data-bind. I will strip elements sequentially fo pinpoint the cause. --><!-- step 1: remove search, use placeList() -->
+<!-- This is to find out what broke the data-bind. I will strip elements sequentially fo pinpoint the cause. --><!-- step 1: remove search, use placeList()
+step2: remove map marker: still no list-->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -68,7 +69,7 @@
           this.name = ko.observable(data.name);
           this.lat = ko.observable(data.location.coordinate.latitude);
           this.lon = ko.observable(data.location.coordinate.longitude);
-          this.marker = {};
+          // this.marker = {};step2
         };
 
         //set up auth tokens
@@ -134,21 +135,21 @@
               });//push
 
               //call showMarker here
-              self.showMarker(self.placeList());
+              // self.showMarker(self.placeList());step2
             }//success
           });//.ajax
 
           //insert marker with view model instead of custom binding per suggestion of Udacity stuent leader mcs
-          self.showMarker = function(anArray) {
-            anArray.map(function(currentValue, index, array) {
-              var markerObject = {};
-              markerObject.position = {lat: currentValue.lat(), lng: currentValue.lon()};
-              markerObject.map = map1;
+          // self.showMarker = function(anArray) {
+          //   anArray.map(function(currentValue, index, array) {
+          //     var markerObject = {};
+          //     markerObject.position = {lat: currentValue.lat(), lng: currentValue.lon()};
+          //     markerObject.map = map1;
 
-              array[index].marker = new google.maps.Marker(markerObject);
-              // console.log(index+self.placeList()[index].name());//this works
-            });//map
-          };
+          //     array[index].marker = new google.maps.Marker(markerObject);
+          //     // console.log(index+self.placeList()[index].name());//this works
+          //   });//map
+          // };step2
 
           //the live filtering function has to be placed near the end; use a search variable for better performance per suggestion of Karol from Udacity forum
           // self.searchResults = ko.computed(function(){
