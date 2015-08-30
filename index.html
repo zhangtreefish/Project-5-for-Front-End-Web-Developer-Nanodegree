@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <meta charset="utf-8">
     <title>Yelp OAuth Example</title>
 
     <!-- essential to show map:  -->
@@ -16,11 +17,10 @@
 
     <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    <script type="text/javascript"
-             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAt9NmLDjWl_kQngI0jq0BPA3QUXuMQM_I"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAt9NmLDjWl_kQngI0jq0BPA3QUXuMQM_I"></script>
     <script src="js/lib/knockout-3.2.0.js"></script>
-    <script type="text/javascript" src="http://oauth.googlecode.com/svn/code/javascript/oauth.js"></script>
-    <script type="text/javascript" src="http://oauth.googlecode.com/svn/code/javascript/sha1.js"></script>
+    <script src="http://oauth.googlecode.com/svn/code/javascript/oauth.js"></script>
+    <script src="http://oauth.googlecode.com/svn/code/javascript/sha1.js"></script>
   </head>
 
   <body>
@@ -34,8 +34,8 @@
 
           <div id="list-view" class="col-md-4">
               <h2>List View</h2>
-              <ul data-bind="foreach: search()">
-                <li data-bind="text:name()"></li>
+              <ul data-bind="foreach:  { data: search(), as: 'place' }">
+                <li data-bind="text:place.name"></li>
               </ul>
           </div>
 
