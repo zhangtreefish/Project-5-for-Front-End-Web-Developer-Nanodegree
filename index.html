@@ -29,13 +29,14 @@
           <h1> San Antonio Retirement Homes </h1>
           <div class="col-md-4">
               <h2>Search Bar</h2>
+              <h5> type something below to see the list of retirement homes</h5>
               <input id="search" type="search" placeholder="San Antonio retirement homes" name="q" data-bind="textInput: query" autocomplete="off">
           </div>
 
           <div id="list-view" class="col-md-4">
               <h2>List View</h2>
               <ul data-bind="foreach: searchResults()">
-                <li data-bind="name"></li>
+                <li data-bind="text:name()"></li>
               </ul>
           </div>
 
@@ -91,7 +92,7 @@
         parameters = [];
         parameters.push(['term', terms]);
         parameters.push(['location', near]);
-        parameters.push(['limit', 5]);
+        parameters.push(['limit', 6]);
         parameters.push(['callback', 'cb']);
         parameters.push(['oauth_consumer_key', auth.consumerKey]);
         parameters.push(['oauth_consumer_secret', auth.consumerSecret]);
