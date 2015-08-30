@@ -76,19 +76,7 @@
           this.marker = {};
         };
 
-        function MyViewModel() {
-          var self = this;
-
-          self.query = ko.observable('');
-          self.placeList=ko.observableArray([]);
-
-          // self.search = ko.computed(function(){
-          //   return ko.utils.arrayFilter(self.placeList(), function(place){
-          //     return place.name.toLowerCase().indexOf(self.query().toLowerCase()) >= 0;
-          //   });
-          // });
-
-          //set up auth tokens
+        //set up auth tokens
           var auth = {
             consumerKey: "vJDdZm0QvnzPtjptn4BqSQ",
             consumerSecret: "18nkUx80NEC6qnpQILDZwOfoXgY",
@@ -127,8 +115,21 @@
           OAuth.setTimestampAndNonce(message);
           OAuth.SignatureMethod.sign(message, accessor);
           var parameterMap = OAuth.getParameterMap(message.parameters);
-          parameterMap.oauth_signature = OAuth.percentEncode(parameterMap.oauth_signature)
+          parameterMap.oauth_signature = OAuth.percentEncode(parameterMap.oauth_signature);
           // console.log(parameterMap);this works
+
+        function MyViewModel() {
+          var self = this;
+
+          self.query = ko.observable('');
+          self.placeList=ko.observableArray([]);
+
+          // self.search = ko.computed(function(){
+          //   return ko.utils.arrayFilter(self.placeList(), function(place){
+          //     return place.name.toLowerCase().indexOf(self.query().toLowerCase()) >= 0;
+          //   });
+          // });
+
 
           $.ajax({
             'url': message.action,
