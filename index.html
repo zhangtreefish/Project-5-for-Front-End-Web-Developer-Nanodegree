@@ -145,10 +145,8 @@
               var markerObject = {};
               markerObject.position = {lat: currentValue.lat(), lng: currentValue.lon()};
               markerObject.map = map1;
-              console.log(self.query().value);
-              if(currentValue.name()!==self.query()) {
-                array[index].marker = new google.maps.Marker(markerObject);
-              }
+              array[index].marker = new google.maps.Marker(markerObject);
+              self.placeList()[index].marker = array[index].marker;
               // console.log(index+self.placeList()[index].name());//this works
             });//map
           };
@@ -156,16 +154,19 @@
           //the live filtering function has to be placed near the end; use a search variable for better performance per suggestion of Karol from Udacity forum
           self.searchResults = ko.computed(function(){
             //filter the list
-            var search = self.query().toLowerCase();
-            return ko.utils.arrayFilter(self.placeList(), function(place){
-               return place.name().toLowerCase().indexOf(search) >= 0;
-            });
-          });
+            if(!self.query()) {
+              return self.placeList();
+            } else {
+              var search = self.query().toLowerCase();
+              return ko.utils.arrayFilter(self.placeList(), function(place){
+                 return place.name().toLowerCase().indexOf(search) >= 0;
+              });
+            }//else
+          },this);//TODO:this is optional here. Why?
 
         };//MyViewModel
 
         var viewModel = new MyViewModel();
-        viewModel.query.subscribe(viewModel.searchResults);
         ko.applyBindings(viewModel);
       });
     </script>
