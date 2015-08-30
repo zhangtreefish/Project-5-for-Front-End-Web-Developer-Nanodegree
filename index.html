@@ -9,8 +9,8 @@
     <style>
       html, body, #map { height: 100%; margin: 0; padding: 0;}
       #map{
-        width: 300px;
-        height: 300px;
+        width: 400px;
+        height: 400px;
       }
       #list-view {height:500px}
     </style>
@@ -28,22 +28,20 @@
       <div class="row">
           <h1> San Antonio Retirement Homes </h1>
           <!-- the search bar -->
-          <div class="col-md-4">
-              <h2>Search Bar</h2>
-              <h5> type something below to see the list of retirement homes</h5>
-              <input id="search" type="search" placeholder="San Antonio retirement homes" name="q" data-bind="textInput: query,valueUpdate: 'keyup'" autocomplete="off">
-          </div>
+          <div class="col-md-6">
+            <h2>Search Bar</h2>
+            <h5> type something below to see the list of retirement homes</h5>
+            <input id="search" type="search" placeholder="San Antonio retirement homes" name="q" data-bind="textInput: query,valueUpdate: 'keyup'" autocomplete="off">
 
           <!-- the list-view -->
-          <div id="list-view" class="col-md-4">
-              <h2>List View</h2>
-              <ul data-bind="foreach: searchResults()">
-                <li data-bind="text:name()+',Latitude:'+lat()+',Longitude:'+lon()"></li>
-              </ul>
+            <h2>List View</h2>
+            <ul data-bind="foreach: searchResults()">
+              <li data-bind="text:name()+',Latitude:'+lat()+',Longitude:'+lon()"></li>
+            </ul>
           </div>
 
           <!-- the map and the markers -->
-          <div class="col-md-4">
+          <div class="col-md-6">
               <h2>Map</h2>
               <div id="map"></div>
           </div>
