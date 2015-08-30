@@ -82,11 +82,11 @@
           self.query = ko.observable('');
           self.placeList=ko.observableArray([]);
 
-          self.search = ko.computed(function(){
-            return ko.utils.arrayFilter(self.placeList(), function(place){
-              return place.name.toLowerCase().indexOf(self.query().toLowerCase()) >= 0;
-            });
-          });
+          // self.search = ko.computed(function(){
+          //   return ko.utils.arrayFilter(self.placeList(), function(place){
+          //     return place.name.toLowerCase().indexOf(self.query().toLowerCase()) >= 0;
+          //   });
+          // });
 
           //set up auth tokens
           var auth = {
@@ -144,10 +144,9 @@
             // console.log(business.location.coordinate, business.name);this works
             console.log("1"+self.placeList()[0].name());
 
-            console.log("2"+self.placeList()[1].name());
-
             self.showMarker(self.placeList());
             self.search();
+            console.log("2"+self.placeList()[1].name());
             }//success
           });//.ajax
 
@@ -161,12 +160,19 @@
               array[index].marker = new google.maps.Marker(markerObject);
             });//map
           };
-                //here no dot, map & marker
-// console.log("4"+self.placeList()[0].name());Uncaught TypeError: Cannot read property 'name' of undefined
+
+          self.search = ko.computed(function(){
+            return ko.utils.arrayFilter(self.placeList(), function(place){
+              return place.name.toLowerCase().indexOf(self.query().toLowerCase()) >= 0;
+            });
+          });
+
+
+          console.log("4"+self.placeList()[0].name());//Uncaught TypeError: Cannot read property 'name' of undefined
         };//MyViewModel
-//dot for list, no marker on map
-// console.log("5"+self.placeList()[0].name());Uncaught TypeError: self.placeList is not a function
+
         var viewModel = new MyViewModel();
+        console.log("5"+viewModel.placeList()[0].name());//Uncaught TypeError: self.placeList is not a function
         ko.applyBindings(viewModel);
       });
     </script>
