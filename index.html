@@ -146,8 +146,6 @@
               markerObject.position = {lat: currentValue.lat(), lng: currentValue.lon()};
               markerObject.map = map1;
               array[index].marker = new google.maps.Marker(markerObject);
-              self.placeList()[index].marker = array[index].marker;
-              // console.log(index+self.placeList()[index].name());//this works
             });//map
           };
 
@@ -158,6 +156,13 @@
               return self.placeList();
             } else {
               var search = self.query().toLowerCase();
+              //hide a marker if its location name does not appear in the user input
+              self.placeList().forEach(function(currentValue,index,array) {
+                if (currentValue.name().toLowerCase().indexOf(search) === -1) {
+                  currentValue.marker.setVisible(false);
+                }
+              });
+              //filter the list view based on the user input
               return ko.utils.arrayFilter(self.placeList(), function(place){
                  return place.name().toLowerCase().indexOf(search) >= 0;
               });
