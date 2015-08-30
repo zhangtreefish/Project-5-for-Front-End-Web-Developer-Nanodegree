@@ -43,7 +43,6 @@
               <h2>Map</h2>
               <div id="map"></div>
           </div>
-      </div>
     </div>
 
     <script type="text/javascript">
@@ -115,7 +114,7 @@
           var self = this;
 
           self.query = ko.observable('');
-          self.placeList=ko.observableArray([]);
+          self.placeList = ko.observableArray([]);
 
           $.ajax({
             'url': message.action,
@@ -126,11 +125,13 @@
             'success':function(data) {
               data.businesses.forEach(function(business) {
                 self.placeList().push(new Place(business));
+
+                //call live update of the list here
+                self.search();
               });//push
 
-            self.showMarker(self.placeList());
-            self.search();
-            console.log("1.1"+self.placeList()[1].name());//this works
+              //call showMarker here
+              self.showMarker(self.placeList());
             }//success
           });//.ajax
 
@@ -146,17 +147,19 @@
             });//map
           };
 
+          //search has to be placed near the end
           self.search= ko.computed(function(){
-            return ko.utils.arrayFilter(self.placeList(), function(place){
-              return place.name().toLowerCase().indexOf(self.query().toLowerCase()) >= 0;
-              console.log(index+self.placeList()[index].name());//does not work
+              return ko.utils.arrayFilter(self.placeList(), function(place){
+                return place.name().toLowerCase().indexOf(self.query().toLowerCase()) >= 0;
+                console.log(index+self.placeList()[index].name());//does not work
+              });
             });
-          });
+
         };//MyViewModel
 
         var viewModel = new MyViewModel();
         viewModel.query.subscribe(viewModel.search);
-        ko.applyBindings(viewModel);
+        ko.applyBindings(viewModel);//TODO: the binding is not happening?!
       });
     </script>
   </body>
