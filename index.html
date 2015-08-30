@@ -12,7 +12,7 @@
         width: 300px;
         height: 300px;
       }
-      #list-view {height:300px}
+      #list-view {height:500px}
     </style>
 
     <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
@@ -38,7 +38,7 @@
           <div id="list-view" class="col-md-4">
               <h2>List View</h2>
               <ul data-bind="foreach: searchResults()">
-                <li data-bind="text:name()"></li>
+                <li data-bind="text:name()+',Latitude:'+lat()+',Longitude:'+lon()"></li>
               </ul>
           </div>
 
@@ -57,7 +57,7 @@
           var myOptions = {
               zoom: 10,
               center: new google.maps.LatLng(29.54, -98.51),
-              mapTypeId: "terrain"s
+              mapTypeId: "terrain"
           };
           map1 = new google.maps.Map($("#map")[0], myOptions);
         };
@@ -69,6 +69,7 @@
           this.lat = ko.observable(data.location.coordinate.latitude);
           this.lon = ko.observable(data.location.coordinate.longitude);
           this.marker = {};
+          this.infowindow = {};
         };
 
         //set up auth tokens for the Yelp request
@@ -148,6 +149,23 @@
               array[index].marker = new google.maps.Marker(markerObject);
             });//map
           };
+
+          // //TODO:function createContent(name,address) {};
+          //   var contentString =
+          //       '<div id="content">'+
+          //           '<div id="siteNotice">'+'</div>'+
+          //           '<h1 id="firstHeading" class="firstHeading">Uluru</h1>'+
+          //       '</div>';
+          // //TODO:infowindow.setContent(createContent(marker.name, marker.address));
+
+          //   //create and show info window
+          //   var infowindow = new google.maps.InfoWindow({
+          //       content: contentString
+          //   });
+
+          //   marker.addListener('click', function() {
+          //       infowindow.open(map, marker);
+          //   });
 
           //The live filtering function has to be placed near the end; use a search variable for better performance per suggestion of Karol from Udacity forum
           self.searchResults = ko.computed(function(){
