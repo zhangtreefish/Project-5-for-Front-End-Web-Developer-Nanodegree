@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title> SA Retirement Homes </title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      html, body, #map-canvas { height: 100%; margin: 0; padding: 0;}
+      #map-canvas {width:500px; height:400px;}
+      #listPlace {height:100%}
+    </style>
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAt9NmLDjWl_kQngI0jq0BPA3QUXuMQM_I"></script>
+    <script src="js/lib/knockout-3.2.0.js"></script>
+  </head>
+  <body>
+   <div class="container">
+        <div class="row" display="inline-flex">
+            <h1> San Antonio Senior Homes </h1>
+            <div class="col-md-4">
+                <h2>Search Bar</h2>
+                <input id="search" type="search" name="search" placeholder="San Antonio retirement homes" data-bind="value: query, valueUpdate: 'keyup'" autocomplete="off"></input>
+            </div>
+
+            <div id="list-view" class="col-md-4">
+                <h2>List View</h2>
+                    <div data-bind="foreach: search()">
+                        <div data-bind="text:name"></div>
+                        <!--<div data-bind="foreach:placeList" data-bind="latitude: Lat, longitude:Lng, mapMarker:map"> does not work , breaks search()-->
+
+                    </div>
+
+                    <div data-bind="foreach:placeList">
+                        <div data-bind="latitude: Lat, longitude:Lng, mapMarker:map"></div>
+                    </div>
+            </div>
+
+            <div class="col-md-4">
+                <h2>Map</h2>
+                <div id="map-canvas">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type='text/javascript'>
+    //FIRST need to load the map
+        var map;
+
+        function initialize() {
+            var myLatLng = new google.maps.LatLng(29.6, -98.5);
+
+            var mapOptions = {
+                center: myLatLng,
+                zoom: 8,
+                scaleControl: true,
+                panControl:true
+            };
+            map = new google.maps.Map(document.getElementById('map-canvas'),
+                mapOptions);
+
+            var marker = new google.maps.Marker({
+                position: myLatLng,
+                map: map,
+                title: 'Hello World!'
+            });
+        };
+
+        google.maps.event.addDomListener(window, 'load', initialize);
+
+    var places = [
+        {
+            'name':'senior care',
+            'lat': 67,
+            'Lng':76,
+            'mapMarker':''
+            },
+        {
+            'name':'swimming pool',
+            'lat':45,
+            'Lng':-20,
+            'mapMarker':''
+            },
+        {
+            'name':'park',
+            'lat':120,
+            'Lng':80,
+            'mapMarker':''
+            }
+    ];
+
+var ViewModel = function() {
+  var self = this;
+
+  self.placeList = ko.observableArray(places);
+
+  self.query = ko.observable('');
+
+  self.search = ko.computed(function(){
+    return ko.utils.arrayFilter(self.placeList(), function(place){
+      return place.name.toLowerCase().indexOf(self.query().toLowerCase()) >= 0;
+    });
+  });
+};
+
+var viewModel = new ViewModel();
+ko.applyBindings(viewModel);
+
+ko.bindingHandlers.mapMarker = {
+    init: function (element, valueAccessor, allBindingsAccessor, viewModel) {
+        var position = new google.maps.LatLng(allBindingsAccessor().latitude(), allBindingsAccessor().longitude());
+
+        var marker = new google.maps.Marker({
+            position: position,
+            title: name
+        });
+        marker.setMap(map);
+    }
+};
+
+    </script>
+  </body>
+</html>
