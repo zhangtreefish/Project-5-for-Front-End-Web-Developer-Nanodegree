@@ -54,9 +54,9 @@
           var myOptions = {
               zoom: 10,
               center: new google.maps.LatLng(29.54, -98.51),
-              mapTypeId: 'terrain'
+              mapTypeId: "terrain"
           };
-          map1 = new google.maps.Map($('#map')[0], myOptions);
+          map1 = new google.maps.Map($("#map")[0], myOptions);
         };
         createMap();
 
@@ -86,23 +86,23 @@
         };
 
         //set up the Yelp query
-        var terms = 'retirement homes';
-        var near = 'San+Antonio';
+        var terms = "retirement homes";
+        var near = "San+Antonio";
 
         parameters = [];
-        parameters.push(['term', terms]);
-        parameters.push(['location', near]);
-        parameters.push(['limit', 6]);
-        parameters.push(['callback', 'cb']);
-        parameters.push(['oauth_consumer_key', auth.consumerKey]);
-        parameters.push(['oauth_consumer_secret', auth.consumerSecret]);
-        parameters.push(['oauth_token', auth.accessToken]);
-        parameters.push(['oauth_signature_method', 'HMAC-SHA1']);
+        parameters.push(["term", terms]);
+        parameters.push(["location", near]);
+        parameters.push(["limit", 6]);
+        parameters.push(["callback", "cb"]);
+        parameters.push(["oauth_consumer_key", auth.consumerKey]);
+        parameters.push(["oauth_consumer_secret", auth.consumerSecret]);
+        parameters.push(["oauth_token", auth.accessToken]);
+        parameters.push(["oauth_signature_method", "HMAC-SHA1"]);
 
         var message = {
-          'action': 'http://api.yelp.com/v2/search',
-          'method': 'GET',
-          'parameters': parameters
+          "action": "http://api.yelp.com/v2/search",
+          "method": "GET",
+          "parameters": parameters
         };
 
         OAuth.setTimestampAndNonce(message);
@@ -118,12 +118,12 @@
           self.placeList = ko.observableArray([]);
 
           $.ajax({
-            'url': message.action,
-            'data': parameterMap,
-            'cache': true,
-            'dataType': 'jsonp',
-            'jsonpCallback': 'cb',
-            'success':function(data) {
+            "url": message.action,
+            "data": parameterMap,
+            "cache": true,
+            "dataType": "jsonp",
+            "jsonpCallback": "cb",
+            "success":function(data) {
               data.businesses.forEach(function(business) {
                 self.placeList().push(new Place(business));
 
