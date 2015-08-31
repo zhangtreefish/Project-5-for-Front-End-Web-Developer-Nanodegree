@@ -24,3 +24,5 @@
 24. .ajax: https://github.com/ddo/oauth-1.0a
 25. Yelp API console where I got data for San Antonio retirement home: https://www.yelp.com/developers/api_console
 26: this Yelp link has code that works: http://forums.asp.net/t/1801674.aspx?how+to+create+API+URL+using+some+credentials
+27: on adBlockers preventing ajax calls: http://stackoverflow.com/questions/23341765/getting-neterr-blocked-by-client-error-on-some-ajax-calls. atChrome/Setting/Extension, disable AdBlocker.
+28: marker filtering by mcs: http://codepen.io/prather-mcs/pen/KpjbNN
