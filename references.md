@@ -7,7 +7,7 @@
 7. more on ko implementation of google Maps: http://www.codeproject.com/Articles/351298/KnockoutJS-and-Google-Maps-binding
 8. An app using ko and google maps:http://www.codeproject.com/Articles/387626/BikeInCity-KnockoutJS-JQuery-Google-Maps
 9. custom binding issue:http://stackoverflow.com/questions/15545547/custom-binding-valueaccessor-has-unexpected-result
-1
+10. ko implementation of map pins: http://stackoverflow.com/questions/29557938/removing-map-pin-with-search
 11.https://github.com/parachaz/P5NeighborhoodMap
 12. https://github.com/cookiewang/udcity_front_end_web_project_5
 13: knockout live search: https://gist.github.com/hinchley/5973926
@@ -26,3 +26,5 @@
 26: this Yelp link has code that works: http://forums.asp.net/t/1801674.aspx?how+to+create+API+URL+using+some+credentials
 27: on adBlockers preventing ajax calls: http://stackoverflow.com/questions/23341765/getting-neterr-blocked-by-client-error-on-some-ajax-calls. atChrome/Setting/Extension, disable AdBlocker.
 28: marker filtering by mcs: http://codepen.io/prather-mcs/pen/KpjbNN
+29. value binding and subscribe in ko: http://stackoverflow.com/questions/19131154/updating-element-back-when-model-updates-while-using-knockout-custom-binding
+30. same as 11: http://deostroll-developer.blogspot.com/2013/10/subscribing-to-your-observable-in.html
