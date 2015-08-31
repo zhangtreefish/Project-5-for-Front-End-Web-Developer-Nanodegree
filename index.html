@@ -66,6 +66,7 @@
           this.name = ko.observable(data.name);
           this.lat = ko.observable(data.location.coordinate.latitude);
           this.lon = ko.observable(data.location.coordinate.longitude);
+          this.info = data.url;
           this.marker = {};
           this.infowindow = {};
         };
@@ -141,29 +142,28 @@
           //insert marker with view model instead of custom binding per suggestion of Udacity student leader mcs
           self.showMarker = function(anArray) {
             anArray.map(function(currentValue, index, array) {
+              //construct and show marker
               var markerObject = {};
               markerObject.position = {lat: currentValue.lat(), lng: currentValue.lon()};
               markerObject.map = map1;
               array[index].marker = new google.maps.Marker(markerObject);
+
+              //create an info content for display in the infowindow
+              var contentString =
+                '<div id="content">'+
+                    '<h1 id="firstHeading" class="firstHeading">Url</h1>'+
+                    '<div id="siteUrl">'+currentValue.info+'</div>'+
+                '</div>';
+              //create and show info window
+              var infowindow = new google.maps.InfoWindow({
+                content: contentString
+              });
+              //set up the infowindow for the marker
+              array[index].marker.addListener('click', function() {
+                infowindow.open(map1, array[index].marker);
+              });
             });//map
           };
-
-          // //TODO:function createContent(name,address) {};
-          //   var contentString =
-          //       '<div id="content">'+
-          //           '<div id="siteNotice">'+'</div>'+
-          //           '<h1 id="firstHeading" class="firstHeading">Uluru</h1>'+
-          //       '</div>';
-          // //TODO:infowindow.setContent(createContent(marker.name, marker.address));
-
-          //   //create and show info window
-          //   var infowindow = new google.maps.InfoWindow({
-          //       content: contentString
-          //   });
-
-          //   marker.addListener('click', function() {
-          //       infowindow.open(map, marker);
-          //   });
 
           //The live filtering function has to be placed near the end; use a search variable for better performance per suggestion of Karol from Udacity forum
           self.searchResults = ko.computed(function(){
