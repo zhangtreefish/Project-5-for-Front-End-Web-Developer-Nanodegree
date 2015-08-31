@@ -139,6 +139,15 @@
             }
           });//.ajax
 
+          //define a toggle function for use in showMarker
+          function toggleBounce() {
+            if (this.getAnimation() !== null) {
+              this.setAnimation(null);
+            } else {
+              this.setAnimation(google.maps.Animation.BOUNCE);
+            }
+          };
+
           //insert marker with view model instead of custom binding per suggestion of Udacity student leader mcs
           self.showMarker = function(anArray) {
             anArray.map(function(currentValue, index, array) {
@@ -147,6 +156,8 @@
               markerObject.position = {lat: currentValue.lat(), lng: currentValue.lon()};
               markerObject.map = map1;
               array[index].marker = new google.maps.Marker(markerObject);
+              //make the marker bounce on click
+              array[index].marker.addListener('click', toggleBounce);
 
               //create an info content for display in the infowindow
               var contentString =
