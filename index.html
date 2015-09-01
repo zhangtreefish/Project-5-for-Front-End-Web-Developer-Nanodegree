@@ -33,6 +33,9 @@
         width: 220px;
         height: 50px;
       }
+      .tableColumn {
+        width: 100px;
+      }
     </style>
 
     <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
@@ -55,9 +58,22 @@
 
           <!-- the list-view -->
             <h2>List View</h2>
-            <ul data-bind="foreach: searchResults()">
-              <li data-bind="text:name()"></li>
-            </ul>
+            <table>
+              <thead>
+                <tr>
+                  <td class="tableColumn"> name </td>
+                  <td class="tableColumn"> lat </td>
+                  <td class="tableColumn"> lon </td>
+                </tr>
+              </thead>
+              <tbody data-bind="foreach: searchResults()">
+                <tr>
+                  <td data-bind="text:name()"></td>
+                  <td data-bind="text:lat()"></td>
+                  <td data-bind="text:lon()"></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
           <!-- the map and the markers -->
