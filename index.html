@@ -1,18 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta charset="utf-8">
     <title>Yelp OAuth Example</title>
 
     <!-- essential to show map:  -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
     <style>
-      html, body, #map { height: 100%; margin: 0; padding: 0;}
-      #map{
+      html,
+      body,
+      #map {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #map {
         width: 400px;
         height: 400px;
       }
-      #list-view {height:500px}
+      #list-view {
+        height:400px;
+      }
+      /*use rem font to make font bigger and relative to parent's font*/
+      ul li,
+      h5 {
+        font-size: 2.0rem;
+      }
+      /*size the infowindow to be able to fit in the map*/
+      #siteUrl {
+        width: 220px;
+        height: 50px;
+      }
     </style>
 
     <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
@@ -36,7 +56,7 @@
           <!-- the list-view -->
             <h2>List View</h2>
             <ul data-bind="foreach: searchResults()">
-              <li data-bind="text:name()+',Latitude:'+lat()+',Longitude:'+lon()"></li>
+              <li data-bind="text:name()"></li>
             </ul>
           </div>
 
@@ -47,7 +67,7 @@
           </div>
     </div>
 
-    <script type="text/javascript">
+    <script>
       $(function() {
         //create a global map named map1 for later addition of markers
         var map1;
@@ -139,12 +159,12 @@
             }
           });//.ajax
 
-          //define a toggle function for use in showMarker
-          function toggleBounce() {
+          //define a function for use in showMarker; if use Animation.BOUNCE the bounce persists
+          function bounceOnce() {
             if (this.getAnimation() !== null) {
               this.setAnimation(null);
             } else {
-              this.setAnimation(google.maps.Animation.BOUNCE);
+              this.setAnimation(google.maps.Animation.DROP);
             }
           };
 
@@ -155,14 +175,15 @@
               var markerObject = {};
               markerObject.position = {lat: currentValue.lat(), lng: currentValue.lon()};
               markerObject.map = map1;
+              markerObject.animation = google.maps.Animation.DROP;
               array[index].marker = new google.maps.Marker(markerObject);
               //make the marker bounce on click
-              array[index].marker.addListener('click', toggleBounce);
+              array[index].marker.addListener('click', bounceOnce);
 
               //create an info content for display in the infowindow
               var contentString =
                 '<div id="content">'+
-                    '<h1 id="firstHeading" class="firstHeading">Url</h1>'+
+                    '<h4 id="firstHeading" class="firstHeading">Url</h4>'+
                     '<div id="siteUrl">'+currentValue.info+'</div>'+
                 '</div>';
               //create and show info window
