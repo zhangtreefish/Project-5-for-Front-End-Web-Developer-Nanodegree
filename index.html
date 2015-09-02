@@ -163,7 +163,7 @@
             "jsonpCallback": "cb",
             "success":function(data) {
               data.businesses.forEach(function(business) {
-                self.placeList().push(new Place(business));
+                self.placeList.push(new Place(business));//noy placeList()
                 //call live update of the list here
                 self.searchResults();
               });//foreach
