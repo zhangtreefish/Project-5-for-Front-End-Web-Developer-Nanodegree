@@ -48,7 +48,7 @@
 
   <body>
     <div class="container">
-      <div class="row">
+      <div class="row laCiudad">
           <h1> San Antonio Retirement Homes </h1>
           <!-- the search bar -->
           <div class="col-md-6">
@@ -66,11 +66,11 @@
                   <td class="tableColumn"> lon </td>
                 </tr>
               </thead>
-              <tbody data-bind="foreach: searchResults()">
+              <tbody data-bind="foreach: searchResults">
                 <tr>
-                  <td data-bind="text:name()"></td>
-                  <td data-bind="text:lat()"></td>
-                  <td data-bind="text:lon()"></td>
+                  <td data-bind="text:name"></td>
+                  <td data-bind="text:lat"></td>
+                  <td data-bind="text:lon"></td>
                 </tr>
               </tbody>
             </table>
@@ -165,7 +165,7 @@
               data.businesses.forEach(function(business) {
                 self.placeList().push(new Place(business));
                 //call live update of the list here
-                self.searchResults();
+                // self.searchResults();
               });//foreach
               //call showMarker here
               self.showMarker(self.placeList());
