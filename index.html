@@ -54,7 +54,7 @@
           <div class="col-md-6">
             <h2>Search Bar</h2>
             <h5> type something below to see the list of retirement homes</h5>
-            <input id="search" type="search" placeholder="San Antonio retirement homes" name="q" data-bind="textInput: query,valueUpdate: 'keyup'" autocomplete="off">
+            <input id="search" type="search" placeholder="San Antonio retirement homes" name="q" data-bind="value: query,valueUpdate: 'keyup'" autocomplete="off">
 
           <!-- the list-view -->
             <h2>List View</h2>
@@ -67,8 +67,8 @@
                 </tr>
               </thead>
               <tbody data-bind="foreach: searchResults">
-                <tr>
-                  <td data-bind="text:name"></td>
+                <tr class="info">
+                  <td data-bind="text:name" class="name"></td><!-- TODO -->
                   <td data-bind="text:lat"></td>
                   <td data-bind="text:lon"></td>
                 </tr>
@@ -105,6 +105,9 @@
           this.info = data.url;
           this.marker = {};
           this.infowindow = {};
+          this.name.click = function() {        // function_tr
+            $(this.name).css("background-color","yellow");
+          };
         };
 
         //set up auth tokens for the Yelp request
@@ -154,6 +157,10 @@
 
           self.query = ko.observable('');
           self.placeList = ko.observableArray([]);
+          // console.log($(".name")[0].html());
+          // self.showInRed = function() {
+          //     $("h2").css("color","red");
+          //   };
 
           $.ajax({
             "url": message.action,
@@ -163,7 +170,7 @@
             "jsonpCallback": "cb",
             "success":function(data) {
               data.businesses.forEach(function(business) {
-                self.placeList.push(new Place(business));//noy placeList()
+                self.placeList.push(new Place(business));//not placeList() per NathanM
                 //call live update of the list here
                 // self.searchResults();
               });//foreach
@@ -195,6 +202,10 @@
               array[index].marker = new google.maps.Marker(markerObject);
               //make the marker bounce on click
               array[index].marker.addListener('click', bounceOnce);
+              //set up the infowindow for the marker, activated by a click on the marker
+              array[index].marker.addListener('click', function() {
+                infowindow.open(map1, array[index].marker);
+              });
 
               //create an info content for display in the infowindow
               var contentString =
@@ -206,12 +217,13 @@
               var infowindow = new google.maps.InfoWindow({
                 content: contentString
               });
-              //set up the infowindow for the marker
-              array[index].marker.addListener('click', function() {
-                infowindow.open(map1, array[index].marker);
-              });
             });//map
-          };
+          };//showMarker
+          //TODO:renders the marker bounce upon a click on an item in the list
+
+              // :array[index].name().addListener('click', function() {
+              //   array[index].marker.bounceOnce();
+              // });
 
           //The live filtering function has to be placed near the end; use a search variable for better performance per suggestion of Karol from Udacity forum
           self.searchResults = ko.computed(function(){
@@ -222,9 +234,8 @@
               var search = self.query().toLowerCase();
               //hide a marker if its location name does not appear in the user input
               self.placeList().forEach(function(currentValue,index,array) {
-                if (currentValue.name().toLowerCase().indexOf(search) === -1) {
+                if (currentValue.name().toLowerCase().indexOf(search) === -1)
                   currentValue.marker.setVisible(false);
-                }
               });
               //filter the list view based on the user input
               return ko.utils.arrayFilter(self.placeList(), function(place){
@@ -232,11 +243,13 @@
               });
             }//else
           },this);//TODO:this is optional here. I guess because "self" is used.
-
         };//MyViewModel
 
         var viewModel = new MyViewModel();
         ko.applyBindings(viewModel);
+        $("tr td").click(function() {        // function_tr
+          $(this).css("background-color","yellow");
+        });
       });
     </script>
   </body>
