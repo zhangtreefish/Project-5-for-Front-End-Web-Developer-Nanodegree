@@ -16,7 +16,7 @@
 16: map marker: http://www.codeproject.com/Articles/351298/KnockoutJS-and-Google-Maps-binding
 17: https://github.com/justkaran/udproject5/blob/master/js/main.js
 18: on Yelp: https://www.yelp.com/developers/documentation/v2/search_api
-19: custon binding in ko: http://www.knockmeout.net/2011/07/another-look-at-custom-bindings-for.html
+19: custom binding in ko: http://www.knockmeout.net/2011/07/another-look-at-custom-bindings-for.html
 20: getting a cerain version of a file from a past commit: http://angry-fly.com/2011/11/pulling-specific-files-from-a-commit-using-git/
 21: John's awesome search method: http://codepen.io/JohnMav/pen/OVEzWM
 22: on map marker: https://developers.google.com/maps/documentation/javascript/markers
@@ -28,3 +28,4 @@
 28: marker filtering by mcs: http://codepen.io/prather-mcs/pen/KpjbNN
 29. value binding and subscribe in ko: http://stackoverflow.com/questions/19131154/updating-element-back-when-model-updates-while-using-knockout-custom-binding
 30. same as 11: http://deostroll-developer.blogspot.com/2013/10/subscribing-to-your-observable-in.html
+31: singleton: https://stackoverflow.com/questions/1875596/have-just-one-infowindow-open-in-google-maps-api-v3
