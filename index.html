@@ -36,6 +36,9 @@
       .tableColumn {
         width: 100px;
       }
+      .thePlace {
+        background-color: red;
+      }
     </style>
 
     <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
@@ -68,12 +71,16 @@
               </thead>
               <tbody data-bind="foreach: searchResults">
                 <tr class="info">
-                  <td data-bind="text:name" class="name"></td><!-- TODO -->
+                  <td data-bind="text:name, click:$parent.placeClicked" class="name"></td><!-- TODO -->
                   <td data-bind="text:lat"></td>
                   <td data-bind="text:lon"></td>
                 </tr>
               </tbody>
             </table>
+            <br>
+
+            <!-- a section to display the clicked place -->
+            <section>Welcome to <span data-bind="text:currentPlace().name"></span>!</section>
           </div>
 
           <!-- the map and the markers -->
@@ -97,6 +104,9 @@
         };
         createMap();
 
+        //set a global infowindow-set as global so that only one infowindow opens, vs. one infowindow for each marker
+        var infowindow = new google.maps.InfoWindow();
+
         //set up a class called Place for later construction of place objects; it is essential to declare the name as ko.observable since we want to display the names. So is with lat and lon since we want to display the markers, a derivative of lat and lon; if lat or lon is not declared ko.observable, the markers would not show. The marker property is added so that it can be accessed in the marker construction function showMarker and filtering function searchResults.
         var Place = function(data) {
           this.name = ko.observable(data.name);
@@ -104,10 +114,7 @@
           this.lon = ko.observable(data.location.coordinate.longitude);
           this.info = data.url;
           this.marker = {};
-          this.infowindow = {};
-          this.name.click = function() {        // function_tr
-            $(this.name).css("background-color","yellow");
-          };
+          // this.infowindow = {};
         };
 
         //set up auth tokens for the Yelp request
@@ -157,10 +164,7 @@
 
           self.query = ko.observable('');
           self.placeList = ko.observableArray([]);
-          // console.log($(".name")[0].html());
-          // self.showInRed = function() {
-          //     $("h2").css("color","red");
-          //   };
+          self.currentPlace = ko.observable('');
 
           $.ajax({
             "url": message.action,
@@ -202,10 +206,6 @@
               array[index].marker = new google.maps.Marker(markerObject);
               //make the marker bounce on click
               array[index].marker.addListener('click', bounceOnce);
-              //set up the infowindow for the marker, activated by a click on the marker
-              array[index].marker.addListener('click', function() {
-                infowindow.open(map1, array[index].marker);
-              });
 
               //create an info content for display in the infowindow
               var contentString =
@@ -213,25 +213,21 @@
                     '<h4 id="firstHeading" class="firstHeading">Url</h4>'+
                     '<div id="siteUrl">'+currentValue.info+'</div>'+
                 '</div>';
-              //create and show info window
-              var infowindow = new google.maps.InfoWindow({
-                content: contentString
+              //show info window for each marker when clicked
+              google.maps.event.addListener(currentValue.marker,'click',function() {
+                infowindow.setContent(contentString);
+                infowindow.open(map1,this);
               });
             });//map
           };//showMarker
-          //TODO:renders the marker bounce upon a click on an item in the list
 
-              // :array[index].name().addListener('click', function() {
-              //   array[index].marker.bounceOnce();
-              // });
-
-          //The live filtering function has to be placed near the end; use a search variable for better performance per suggestion of Karol from Udacity forum
+          //The live filtering function has to be placed near the end;
           self.searchResults = ko.computed(function(){
             //filter the list
             if(!self.query()) {
               return self.placeList();
             } else {
-              var search = self.query().toLowerCase();
+              var search = self.query().toLowerCase();//use a search variable for performance per Karol @ Udacity forum
               //hide a marker if its location name does not appear in the user input
               self.placeList().forEach(function(currentValue,index,array) {
                 if (currentValue.name().toLowerCase().indexOf(search) === -1)
@@ -243,13 +239,15 @@
               });
             }//else
           },this);//TODO:this is optional here. I guess because "self" is used.
+
+          //define what happens when a place in the list is clicked:asign it to a welcome message display object.
+          self.placeClicked = function() {
+            self.currentPlace(this);
+          };
         };//MyViewModel
 
         var viewModel = new MyViewModel();
         ko.applyBindings(viewModel);
-        $("tr td").click(function() {        // function_tr
-          $(this).css("background-color","yellow");
-        });
       });
     </script>
   </body>
