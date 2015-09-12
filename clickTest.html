@@ -23,19 +23,18 @@
         <ul data-bind="foreach:searchResults">
           <li data-bind="text:name,click:$parent.placeClicked"></li>
         </ul>
-        <div data-bind="text:currentPlace()">here <!-- without() gets d -->
+        <div data-bind="text:currentPlace().name">here
         </div>
       </div>
-
+    </body>
     <script>
         function MyViewModel() {
           var self = this;
-          self.searchResults = ko.observableArray([{name:'Dallas'},{name:'San Antonio'}]);
-          self.currentPlace = ko.observable('');//without '' get cannot get name of undefined
-          self.placeClicked=function(){
-            self.currentPlace(this.name);
-            console.log("self.currentPlace:"+self.currentPlace());//without() gets d
-            console.log("theClicked:"+this.name);
+          self.searchResults = ko.observableArray([{"name":"Dallas"},{"name":"San Antonio"}]);
+          self.currentPlace = ko.observable(self.searchResults()[0]);
+          self.placeClicked=function(theClicked){
+            self.currentPlace(theClicked);
+            console.log(self.currentPlace.name);
             // return self.currentPlace;
           };
         };//MyViewModel
