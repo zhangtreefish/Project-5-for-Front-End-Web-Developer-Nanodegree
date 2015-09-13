@@ -228,7 +228,7 @@
             if(!self.query()) {
               return self.placeList();
             } else {
-              var search = self.query().toLowerCase();//use a search variable for performance per Karol @ Udacity forum
+              var search = self.query().toLowerCase();//set search variable outside the loop for performance per Karol @ Udacity forum
               //hide a marker if its location name does not appear in the user input
               self.placeList().forEach(function(currentValue,index,array) {
                 if (currentValue.name().toLowerCase().indexOf(search) === -1)
