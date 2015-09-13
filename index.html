@@ -34,10 +34,10 @@
         width: 220px;
         height: 50px;
       }
-      /*add padding to table elements to faciliate aimed touch on devices*/
+      /*add padding to table elements to faciliate touch on tap targets*/
       td {
         padding-top: 1.0rem;
-        padding-right: 30px;
+        padding-right: 40px;/*40px is the recommended minimum space between tap targets*/
       }
       /*set column width for better layout*/
       .table-column1 {
@@ -231,21 +231,21 @@
 
           //The live filtering function has to be placed near the end;
           self.searchResults = ko.computed(function(){
-            //filter the list
-            if(!self.query()) {
-              return self.placeList();
-            } else {
-              var search = self.query().toLowerCase();//set search variable outside the loop for performance per Karol @ Udacity forum
-              //hide a marker if its location name does not appear in the user input
-              self.placeList().forEach(function(currentValue,index,array) {
-                if (currentValue.name().toLowerCase().indexOf(search) === -1)
+            var search = self.query().toLowerCase();//set outside for performance per Karol
+            //hide a marker if its location name does not appear in the user input
+            self.placeList().forEach(function(currentValue,index,array) {
+              if (currentValue.marker.setVisible) {
+                if (currentValue.name().toLowerCase().indexOf(search) === -1) {
                   currentValue.marker.setVisible(false);
-              });
-              //filter the list view based on the user input
-              return ko.utils.arrayFilter(self.placeList(), function(place){
-                 return place.name().toLowerCase().indexOf(search) >= 0;
-              });
-            }//else
+                } else {
+                  currentValue.marker.setVisible(true);
+                }
+              }
+            });
+            //filter the list view based on the user input
+            return ko.utils.arrayFilter(self.placeList(), function(place){
+               return place.name().toLowerCase().indexOf(search) >= 0;
+            });
           },this);//TODO:this is optional here. I guess because "self" is used.
 
           //define what happens when a place in the list is clicked:asign it to a welcome message display object.
