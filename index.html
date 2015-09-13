@@ -78,7 +78,7 @@
             </thead>
             <tbody data-bind="foreach: searchResults">
               <tr class="info">
-                <td data-bind="text:name,click:$parent.placeClicked()" class="name"></td><!-- TODO -->
+                <td data-bind="text:name,click:$parent.placeClicked" class="name"></td><!-- TODO -->
                 <td data-bind="text:lat().toFixed(2)"></td>
                 <td data-bind="text:lon().toFixed(2)"></td>
               </tr>
@@ -262,7 +262,8 @@
             console.log('line263');//click works
             self.currentPlace(place);
             self.currentPlace.marker.setAnimation(google.maps.Animation.DROP);
-            infowindow.open(map1,currentPlace.marker);
+            // $element.marker.setAnimation(google.maps.Animation.DROP);
+            infowindow.open(map1,self.currentPlace.marker);
           }
         };//MyViewModel
 
