@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"> <!-- scale refers to ratio of Device-Independent-Pixel vs. CSS pixel  -->
     <meta charset="utf-8">
     <title>Yelp OAuth Example</title>
 
@@ -11,30 +11,37 @@
     <style>
       html,
       body,
-      #map {
+      /*#map {
         height: 100%;
         margin: 0;
         padding: 0;
-      }
+      }*/
       #map {
-        width: 400px;
-        height: 400px;
+        width: 500px;
+        height: 500px;
+        max-width:100%;/*add this to match smaller devices*/
       }
       #list-view {
-        height:400px;
+        height:100%;
       }
       /*use rem font to make font bigger and relative to parent's font*/
-      ul li,
+      tr td,
       h5 {
         font-size: 2.0rem;
+      }
+      tr td {
+        padding-right:40px;/*add padding to ease touch on devices*/
       }
       /*size the infowindow to be able to fit in the map*/
       #siteUrl {
         width: 220px;
         height: 50px;
       }
-      .tableColumn {
-        width: 100px;
+      .table-column1 {
+        width: 60%;
+      }
+      .table-column2 {
+        width:20%;
       }
       .thePlace {
         background-color: red;
@@ -61,19 +68,19 @@
 
         <!-- the list-view -->
           <h2>List View</h2>
-          <table>
+          <table id="listView">
             <thead>
               <tr>
-                <td class="tableColumn"> name </td>
-                <td class="tableColumn"> lat </td>
-                <td class="tableColumn"> lon </td>
+                <td class="tableColumn1"> name </td>
+                <td class="tableColumn2"> lat </td>
+                <td class="tableColumn2"> lon </td>
               </tr>
             </thead>
             <tbody data-bind="foreach: searchResults">
               <tr class="info">
                 <td data-bind="text:name, click:$parent.placeClicked" class="name"></td><!-- TODO -->
-                <td data-bind="text:lat"></td>
-                <td data-bind="text:lon"></td>
+                <td data-bind="text:lat().toFixed(2)"></td>
+                <td data-bind="text:lon().toFixed(2)"></td>
               </tr>
             </tbody>
           </table>

@@ -29,3 +29,4 @@
 29. value binding and subscribe in ko: http://stackoverflow.com/questions/19131154/updating-element-back-when-model-updates-while-using-knockout-custom-binding
 30. same as 11: http://deostroll-developer.blogspot.com/2013/10/subscribing-to-your-observable-in.html
 31: singleton: https://stackoverflow.com/questions/1875596/have-just-one-infowindow-open-in-google-maps-api-v3
+32:diaplay rounded numbers in ko: http://stackoverflow.com/questions/7704268/formatting-rules-for-numbers-in-knockoutjs
