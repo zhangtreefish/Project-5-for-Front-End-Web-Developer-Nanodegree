@@ -78,7 +78,7 @@
             </thead>
             <tbody data-bind="foreach: searchResults">
               <tr class="info">
-                <td data-bind="text:name, click:$parent.placeClicked" class="name"></td><!-- TODO -->
+                <td data-bind="text:name,click:$parent.placeClicked()" class="name"></td><!-- TODO -->
                 <td data-bind="text:lat().toFixed(2)"></td>
                 <td data-bind="text:lon().toFixed(2)"></td>
               </tr>
@@ -211,9 +211,10 @@
               markerObject.position = {lat: currentValue.lat(), lng: currentValue.lon()};
               markerObject.map = map1;
               markerObject.animation = google.maps.Animation.DROP;
-              array[index].marker = new google.maps.Marker(markerObject);
-              //make the marker bounce on click
-              array[index].marker.addListener('click', bounceThrice);
+              currentValue.marker = new google.maps.Marker(markerObject);
+
+              //make the marker bounce on click to either the marker of the list item
+              // currentValue.marker.addListener('click', bounceThrice);
 
               //create an info content for display in the infowindow
               var contentString =
@@ -221,11 +222,19 @@
                     '<h4 id="firstHeading" class="firstHeading">Url</h4>'+
                     '<div id="siteUrl">'+currentValue.info+'</div>'+
                 '</div>';
-              //show info window for each marker when clicked
+              //bounce and show info window for each marker when clicked
               google.maps.event.addListener(currentValue.marker,'click',function() {
+                var self = currentValue.marker;
+                self.setAnimation(google.maps.Animation.BOUNCE);
+                setTimeout(function() {
+                  self.setAnimation(null);
+                }, 2100);
                 infowindow.setContent(contentString);
                 infowindow.open(map1,this);
               });
+
+              //TODO: bounce and show infowindow when list item clicked
+
             });//map
           };//showMarker
 
@@ -248,10 +257,13 @@
             });
           },this);//TODO:this is optional here. I guess because "self" is used.
 
-          //define what happens when a place in the list is clicked:asign it to a welcome message display object.
-          self.placeClicked = function() {
-            self.currentPlace(this);
-          };
+          //TODO:show info window and animate marker when list item gets clicked
+          self.placeClicked = function(place,event) {
+            console.log('line263');//click works
+            self.currentPlace(place);
+            self.currentPlace.marker.setAnimation(google.maps.Animation.DROP);
+            infowindow.open(map1,currentPlace.marker);
+          }
         };//MyViewModel
 
         var viewModel = new MyViewModel();
