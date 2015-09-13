@@ -52,42 +52,43 @@
   <body>
     <div class="container">
       <div class="row laCiudad">
-          <h1> San Antonio Retirement Homes </h1>
-          <!-- the search bar -->
-          <div class="col-md-6">
-            <h2>Search Bar</h2>
-            <h5> type something below to see the list of retirement homes</h5>
-            <input id="search" type="search" placeholder="San Antonio retirement homes" name="q" data-bind="value: query,valueUpdate: 'keyup'" autocomplete="off">
+        <h1> San Antonio Retirement Homes </h1>
+        <!-- the search bar -->
+        <div class="col-md-6">
+          <h2>Search Bar</h2>
+          <h5> type something below to see the list of retirement homes</h5>
+          <input id="search" type="search" placeholder="San Antonio retirement homes" name="q" data-bind="value: query,valueUpdate: 'keyup'" autocomplete="off">
 
-          <!-- the list-view -->
-            <h2>List View</h2>
-            <table>
-              <thead>
-                <tr>
-                  <td class="tableColumn"> name </td>
-                  <td class="tableColumn"> lat </td>
-                  <td class="tableColumn"> lon </td>
-                </tr>
-              </thead>
-              <tbody data-bind="foreach: searchResults">
-                <tr class="info">
-                  <td data-bind="text:name, click:$parent.placeClicked" class="name"></td><!-- TODO -->
-                  <td data-bind="text:lat"></td>
-                  <td data-bind="text:lon"></td>
-                </tr>
-              </tbody>
-            </table>
-            <br>
+        <!-- the list-view -->
+          <h2>List View</h2>
+          <table>
+            <thead>
+              <tr>
+                <td class="tableColumn"> name </td>
+                <td class="tableColumn"> lat </td>
+                <td class="tableColumn"> lon </td>
+              </tr>
+            </thead>
+            <tbody data-bind="foreach: searchResults">
+              <tr class="info">
+                <td data-bind="text:name, click:$parent.placeClicked" class="name"></td><!-- TODO -->
+                <td data-bind="text:lat"></td>
+                <td data-bind="text:lon"></td>
+              </tr>
+            </tbody>
+          </table>
+          <br>
 
-            <!-- a section to display the clicked place -->
-            <section>Welcome to San Antonio<span data-bind="text:currentPlace().name"></span>!</section>
-          </div>
+          <!-- a section to display the clicked place -->
+          <section>Welcome to San Antonio <span data-bind="text:currentPlace().name"></span>!</section>
+        </div>
 
-          <!-- the map and the markers -->
-          <div class="col-md-6">
-              <h2>Map</h2>
-              <div id="map"></div>
-          </div>
+        <!-- the map and the markers -->
+        <div class="col-md-6">
+            <h2>Map</h2>
+            <div id="map"></div>
+        </div>
+      </div>
     </div>
 
     <script>
@@ -101,7 +102,7 @@
               mapTypeId: "terrain"
           };
           map1 = new google.maps.Map($("#map")[0], myOptions);
-        };
+        }//semicolon not necessary at the end of function declaration
         createMap();
 
         //set a global infowindow-set as global so that only one infowindow opens, vs. one infowindow for each marker
@@ -137,7 +138,7 @@
         var terms = "retirement homes";
         var near = "San+Antonio";
 
-        parameters = [];
+        var parameters = [];
         parameters.push(["term", terms]);
         parameters.push(["location", near]);
         parameters.push(["limit", 6]);
@@ -186,14 +187,14 @@
             }
           });//.ajax
 
-          //define a function for use in showMarker; if use Animation.BOUNCE the bounce persists
-          function bounceOnce() {
-            if (this.getAnimation() !== null) {
-              this.setAnimation(null);
-            } else {
-              this.setAnimation(google.maps.Animation.DROP);
-            }
-          };
+          //define a function for use in showMarker; one bounce takes about 700ms, use setTimeout to limit the nubmer of bounces; otherwise the bounce persists
+          function bounceThrice() {
+            var self = this;
+              self.setAnimation(google.maps.Animation.BOUNCE);
+              setTimeout(function() {
+                self.setAnimation(null);
+              }, 2100);
+          }
 
           //insert marker with view model instead of custom binding per suggestion of Udacity student leader mcs
           self.showMarker = function(anArray) {
@@ -205,7 +206,7 @@
               markerObject.animation = google.maps.Animation.DROP;
               array[index].marker = new google.maps.Marker(markerObject);
               //make the marker bounce on click
-              array[index].marker.addListener('click', bounceOnce);
+              array[index].marker.addListener('click', bounceThrice);
 
               //create an info content for display in the infowindow
               var contentString =
@@ -248,7 +249,7 @@
 
         var viewModel = new MyViewModel();
         ko.applyBindings(viewModel);
-      });
+      })
     </script>
   </body>
 </html>
