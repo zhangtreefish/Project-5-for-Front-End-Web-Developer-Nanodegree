@@ -23,7 +23,7 @@
         <ul data-bind="foreach:searchResults">
           <li data-bind="text:name,click:$parent.placeClicked"></li>
         </ul>
-        <div data-bind="text:currentPlace().name">here
+        <div data-bind="text:currentPlace.name">here <!-- without () d on the view -->
         </div>
       </div>
     </body>
@@ -34,7 +34,7 @@
           self.currentPlace = ko.observable(self.searchResults()[0]);
           self.placeClicked=function(theClicked){
             self.currentPlace(theClicked);
-            console.log(self.currentPlace.name);
+            console.log(self.currentPlace().name);//without() gets d for console
             // return self.currentPlace;
           };
         };//MyViewModel
