@@ -9,20 +9,20 @@
     <!-- essential to show map:  -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
     <style>
-      html,
-      body,
+
       /*#map {
         height: 100%;
         margin: 0;
         padding: 0;
       }*/
       #map {
-        width: 500px;
-        height: 500px;
-        max-width:100%;/*add this to match smaller devices*/
+        width: 400px;
+        height: 400px;
+        max-width: 100%;/*add this to match smaller devices*/
+        max-height: 100%;
       }
       #list-view {
-        height:100%;
+        height: 100%;
       }
       /*use rem font to make font bigger and relative to parent's font*/
       tr td,
@@ -85,9 +85,6 @@
             </tbody>
           </table>
           <br>
-
-          <!-- a section to display the clicked place -->
-          <section>Welcome to San Antonio <span data-bind="text:currentPlace().name"></span>!</section>
         </div>
 
         <!-- the map and the markers -->
@@ -122,6 +119,10 @@
           this.lon = ko.observable(data.location.coordinate.longitude);
           this.info = data.url;
           this.marker = {};
+          this.contentString = '<div id="content">'+
+                    '<h4 id="firstHeading" class="firstHeading">Url</h4>'+
+                    '<div id="siteUrl">'+this.info+'</div>'+
+                    '</div>';
           // this.infowindow = {};
         };
 
@@ -217,11 +218,11 @@
               // currentValue.marker.addListener('click', bounceThrice);
 
               //create an info content for display in the infowindow
-              var contentString =
-                '<div id="content">'+
-                    '<h4 id="firstHeading" class="firstHeading">Url</h4>'+
-                    '<div id="siteUrl">'+currentValue.info+'</div>'+
-                '</div>';
+              // var contentString =
+              //   '<div id="content">'+
+              //       '<h4 id="firstHeading" class="firstHeading">Url</h4>'+
+              //       '<div id="siteUrl">'+currentValue.info+'</div>'+
+              //   '</div>';
               //bounce and show info window for each marker when clicked
               google.maps.event.addListener(currentValue.marker,'click',function() {
                 var self = currentValue.marker;
@@ -229,7 +230,7 @@
                 setTimeout(function() {
                   self.setAnimation(null);
                 }, 2100);
-                infowindow.setContent(contentString);
+                infowindow.setContent(currentValue.contentString);
                 infowindow.open(map1,this);
               });
 
@@ -257,13 +258,11 @@
             });
           },this);//TODO:this is optional here. I guess because "self" is used.
 
-          //TODO:show info window and animate marker when list item gets clicked
-          self.placeClicked = function(place,event) {
-            console.log('line263');//click works
-            self.currentPlace(place);
-            self.currentPlace.marker.setAnimation(google.maps.Animation.DROP);
-            // $element.marker.setAnimation(google.maps.Animation.DROP);
-            infowindow.open(map1,self.currentPlace.marker);
+          //show info window and animate marker when list item gets clicked
+          self.placeClicked = function(place) {
+            place.marker.setAnimation(google.maps.Animation.DROP);
+            infowindow.setContent(place.contentString);
+            infowindow.open(map1,place.marker);
           }
         };//MyViewModel
 
