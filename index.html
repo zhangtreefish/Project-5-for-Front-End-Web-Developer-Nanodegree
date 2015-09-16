@@ -198,10 +198,10 @@
           //define a function for use in showMarker; one bounce takes about 700ms, use setTimeout to limit the nubmer of bounces; otherwise the bounce persists
           function bounceThrice() {
             var self = this;
-              self.setAnimation(google.maps.Animation.BOUNCE);
-              setTimeout(function() {
-                self.setAnimation(null);
-              }, 2100);
+            self.setAnimation(google.maps.Animation.BOUNCE);
+            setTimeout(function() {
+              self.setAnimation(null);
+            }, 2100);
           }
 
           //insert marker with view model instead of custom binding per suggestion of Udacity student leader mcs
@@ -259,11 +259,15 @@
           },this);//TODO:this is optional here. I guess because "self" is used.
 
           //show info window and animate marker when list item gets clicked
+          // self.placeClicked = function(place) {
+          //   place.marker.setAnimation(google.maps.Animation.DROP);
+          //   infowindow.setContent(place.contentString);
+          //   infowindow.open(map1,place.marker);
+          // }
+          //Alternatively, simply trigger marker click like below-per reviewer suggestion
           self.placeClicked = function(place) {
-            place.marker.setAnimation(google.maps.Animation.DROP);
-            infowindow.setContent(place.contentString);
-            infowindow.open(map1,place.marker);
-          }
+            google.maps.event.trigger(place.marker,'click');
+          };
         };//MyViewModel
 
         var viewModel = new MyViewModel();
