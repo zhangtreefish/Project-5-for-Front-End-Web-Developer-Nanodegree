@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"> <!-- scale refers to ratio of Device-Independent-Pixel vs. CSS pixel  -->
+    <meta charset="utf-8">
+    <title>Yelp OAuth Example</title>
+
+    <!-- essential to show map:  -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+
+      /*#map {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }*/
+      #map {
+        width: 400px;
+        height: 400px;
+        max-width: 100%;/*add this to match smaller devices*/
+        max-height: 100%;
+      }
+      #list-view {
+        height: 100%;
+      }
+      /*use rem font to make font bigger and relative to parent's font*/
+      tr td,
+      h5 {
+        font-size: 2.0rem;
+      }
+      /*size the infowindow to be able to fit in the map*/
+      #siteUrl {
+        width: 220px;
+        height: 50px;
+      }
+      /*add padding to table elements to faciliate touch on tap targets*/
+      td {
+        padding-top: 1.0rem;
+        padding-right: 40px;/*40px is the recommended minimum space between tap targets*/
+      }
+      /*set column width for better layout*/
+      .table-column1 {
+        width: 60%;
+      }
+      .table-column2 {
+        width:20%;
+      }
+    </style>
+
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDc1crEU2BR1AfmQJj4R_9HXU6u83rMJK4"></script>
+    <script src="js/lib/knockout-3.2.0.js"></script>
+    <!-- <script src="http://oauth.googlecode.com/svn/code/javascript/oauth.js"></script>
+    <script src="http://oauth.googlecode.com/svn/code/javascript/sha1.js"></script> -->
+    <script src="./node_modules/oauth-signature/dist/oauth-signature.min.js"></script>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="row laCiudad">
+        <h1> San Antonio Retirement Homes and Other Places</h1>
+        <!-- the search bar -->
+        <div class="col-md-6">
+          <h2>Search Bar</h2>
+          <h5> type something below to see the list of retirement homes</h5>
+          <input id="search" type="search" placeholder="San Antonio retirement homes" name="q" data-bind="value: query,valueUpdate: 'keyup'" autocomplete="off">
+          <span data-bind="value: query"></span>
+        <!-- the list-view -->
+          <h2>List View</h2>
+          <table id="listView">
+            <thead>
+              <tr>
+                <td class="tableColumn1"> name </td>
+                <td class="tableColumn2"> lat </td>
+                <td class="tableColumn2"> lng </td>
+              </tr>
+            </thead>
+            <tbody data-bind="foreach: searchResults">
+              <tr class="info">
+                <td data-bind="text:name,click:$parent.placeClicked" class="name"></td><!-- TODO -->
+                <td data-bind="text:lat().toFixed(2)"></td>
+                <td data-bind="text:lng().toFixed(2)"></td>
+              </tr>
+            </tbody>
+          </table>
+          <br>
+        </div>
+
+        <!-- the map and the markers -->
+        <div class="col-md-6">
+            <h2>Map</h2>
+            <div id="map"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      $(function() {
+        // function createCORSRequest(method, url) {
+        //   var xhr = new XMLHttpRequest();
+        //   if ("withCredentials" in xhr) {
+
+        //     // Check if the XMLHttpRequest object has a "withCredentials" property.
+        //     // "withCredentials" only exists on XMLHTTPRequest2 objects.
+        //     xhr.open(method, url, true);
+
+        //   } else if (typeof XDomainRequest != "undefined") {
+
+        //     // Otherwise, check if XDomainRequest.
+        //     // XDomainRequest only exists in IE, and is IE's way of making CORS requests.
+        //     xhr = new XDomainRequest();
+        //     xhr.open(method, url);
+
+        //   } else {
+
+        //     // Otherwise, CORS is not supported by the browser.
+        //     xhr = null;
+
+        //   }
+        //   return xhr;
+        // }
+
+        // var xhr = createCORSRequest('GET', url);
+        // if (!xhr) {
+        //   throw new Error('CORS not supported');
+        // }
+
+        //create a global map named map1 for later addition of markers
+        var map1;
+        function createMap(){
+          var myOptions = {
+              zoom: 10,
+              center: new google.maps.LatLng(29.54, -98.51),
+              mapTypeId: "terrain"
+          };
+          map1 = new google.maps.Map($("#map")[0], myOptions);
+        }//semicolon not necessary at the end of function declaration
+        createMap();
+
+        //set a global infowindow-set as global so that only one infowindow opens, vs. one infowindow for each marker
+        var infowindow = new google.maps.InfoWindow();
+
+        //set up a class called Place for later construction of place objects; it is essential to declare the name as ko.observable since we want to display the names. So is with lat and lon since we want to display the markers, a derivative of lat and lon; if lat or lon is not declared ko.observable, the markers would not show. The marker property is added so that it can be accessed in the marker construction function showMarker and filtering function searchResults.
+        var Place = function(data) {
+          this.name = ko.observable(data.name);
+          this.lat = ko.observable(data.location.lat);
+          this.lng = ko.observable(data.location.lng);
+          this.info = data.location.address;
+          this.marker = {};
+          this.contentString = '<div id="content">'+
+                    '<h4 id="firstHeading" class="firstHeading">Address</h4>'+
+                    '<div id="siteUrl">'+this.info+'</div>'+
+                    '</div>';
+         };
+
+         var url = 'https://api.foursquare.com/v2/venues/search?query=retirement&near=san+antonio&client_id=UZTDD0DNGXWBBNXSE5N3EOEU2ZSO5LTQ2PICPIAY5ZTUZR1U&client_secret=N1VQRVFHBJMJDCLZBMBA5ANEKCY1LSIYYY0B2WEHZV33QFLI&v=20161120';
+
+
+        function MyViewModel() {
+          var self = this;
+
+          self.query = ko.observable('');
+          self.placeList = ko.observableArray([]);
+          self.currentPlace = ko.observable('');
+          $.ajax({
+            "type": 'GET',
+            "url": url,
+            "cache": true,
+            "dataType": "jsonp",
+            "success":function(data) {
+              data.response.venues.forEach(function(venue) {
+                self.placeList.push(new Place(venue));//not placeList() per NathanM
+              });
+              self.showMarker(self.placeList());
+            },
+            error: function(exception) {
+              alert("data not available at present");
+            }
+          });
+
+          //define a function for use in showMarker; one bounce takes about 700ms, use setTimeout to limit the nubmer of bounces; otherwise the bounce persists
+          function bounceThrice() {
+            var self = this;
+            self.setAnimation(google.maps.Animation.BOUNCE);
+            setTimeout(function() {
+              self.setAnimation(null);
+            }, 2100);
+          }
+
+          //insert marker with view model instead of custom binding per suggestion of Udacity student leader mcs
+          self.showMarker = function(anArray) {
+            anArray.map(function(currentValue, index, array) {
+              //construct and show marker
+              var markerObject = {};
+              markerObject.position = {lat: currentValue.lat(), lng: currentValue.lng()};
+              markerObject.map = map1;
+              markerObject.animation = google.maps.Animation.DROP;
+              currentValue.marker = new google.maps.Marker(markerObject);
+
+              //bounce and show info window for each marker when clicked
+              google.maps.event.addListener(currentValue.marker,'click',function() {
+                var self = currentValue.marker;
+                self.setAnimation(google.maps.Animation.BOUNCE);
+                setTimeout(function() {
+                  self.setAnimation(null);
+                }, 2100);
+                infowindow.setContent(currentValue.contentString);
+                infowindow.open(map1,this);
+              });
+            });
+          };
+
+          //The live filtering function has to be placed near the end;
+          self.searchResults = ko.computed(function(){
+            var search = self.query().toLowerCase();//set outside for performance per Karol
+            //hide a marker if its location name does not appear in the user input
+            self.placeList().forEach(function(currentValue,index,array) {
+              if (currentValue.marker.setVisible) {
+                if (currentValue.name().toLowerCase().indexOf(search) === -1) {
+                  currentValue.marker.setVisible(false);
+                } else {
+                  currentValue.marker.setVisible(true);
+                }
+              }
+            });
+            //filter the list view based on the user input
+            return ko.utils.arrayFilter(self.placeList(), function(place){
+               return place.name().toLowerCase().indexOf(search) >= 0;
+            });
+          },this);//Note:this is optional here. I guess because "self" is used.
+
+          //show info window and animate marker when list item gets clicked
+          // self.placeClicked = function(place) {
+          //   place.marker.setAnimation(google.maps.Animation.DROP);
+          //   infowindow.setContent(place.contentString);
+          //   infowindow.open(map1,place.marker);
+          // }
+          //Alternatively, simply trigger marker click like below-per reviewer suggestion
+          self.placeClicked = function(place) {
+            google.maps.event.trigger(place.marker,'click');
+          };
+        };
+
+        var viewModel = new MyViewModel();
+        ko.applyBindings(viewModel);
+      })
+    </script>
+  </body>
+</html>
