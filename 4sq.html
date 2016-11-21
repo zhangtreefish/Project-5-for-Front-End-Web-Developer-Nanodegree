@@ -65,8 +65,8 @@
         <div class="col-md-6">
           <h2>Search Bar</h2>
           <h5> type something below to see the list of retirement homes</h5>
-          <input id="search" type="search" placeholder="San Antonio retirement homes" name="q" data-bind="value: query,valueUpdate: 'keyup'" autocomplete="off">
-          <span data-bind="value: query"></span>
+          <input id="search" type="search" placeholder="retirement homes" name="q" data-bind="value: query,valueUpdate: 'keyup'" autocomplete="off">
+          <input id="locale" type="search" placeholder="San Antonio" name="q" data-bind="value: locale,valueUpdate: 'keyup'" autocomplete="off">
         <!-- the list-view -->
           <h2>List View</h2>
           <table id="listView">
@@ -98,35 +98,6 @@
 
     <script>
       $(function() {
-        // function createCORSRequest(method, url) {
-        //   var xhr = new XMLHttpRequest();
-        //   if ("withCredentials" in xhr) {
-
-        //     // Check if the XMLHttpRequest object has a "withCredentials" property.
-        //     // "withCredentials" only exists on XMLHTTPRequest2 objects.
-        //     xhr.open(method, url, true);
-
-        //   } else if (typeof XDomainRequest != "undefined") {
-
-        //     // Otherwise, check if XDomainRequest.
-        //     // XDomainRequest only exists in IE, and is IE's way of making CORS requests.
-        //     xhr = new XDomainRequest();
-        //     xhr.open(method, url);
-
-        //   } else {
-
-        //     // Otherwise, CORS is not supported by the browser.
-        //     xhr = null;
-
-        //   }
-        //   return xhr;
-        // }
-
-        // var xhr = createCORSRequest('GET', url);
-        // if (!xhr) {
-        //   throw new Error('CORS not supported');
-        // }
-
         //create a global map named map1 for later addition of markers
         var map1;
         function createMap(){
@@ -151,28 +122,41 @@
           this.marker = {};
           this.contentString = '<div id="content">'+
                     '<h4 id="firstHeading" class="firstHeading">Address</h4>'+
-                    '<div id="siteUrl">'+this.info+'</div>'+
+                    '<div id="siteAddress">'+this.info+'</div>'+
                     '</div>';
          };
 
-         var url = 'https://api.foursquare.com/v2/venues/search?query=retirement&near=san+antonio&client_id=UZTDD0DNGXWBBNXSE5N3EOEU2ZSO5LTQ2PICPIAY5ZTUZR1U&client_secret=N1VQRVFHBJMJDCLZBMBA5ANEKCY1LSIYYY0B2WEHZV33QFLI&v=20161120';
+        function encodeQueryData(data) {
+          let ret = [];
+          for (let d in data)
+            ret.push(encodeURIComponent(d) + '=' + encodeURIComponent(data[d]));
+          return ret.join('&');
+        }
 
 
         function MyViewModel() {
           var self = this;
 
-          self.query = ko.observable('');
+          self.query = ko.observable('retirement homes');
+          self.locale = ko.observable('san antonio');
           self.placeList = ko.observableArray([]);
           self.currentPlace = ko.observable('');
+
+          var url_bit = encodeQueryData({"query": "retirement", "near": "san antonio"});
+          console.log('url', url_bit);
+          var url = 'https://api.foursquare.com/v2/venues/search?query='+url_bit+'&client_id=UZTDD0DNGXWBBNXSE5N3EOEU2ZSO5LTQ2PICPIAY5ZTUZR1U&client_secret=N1VQRVFHBJMJDCLZBMBA5ANEKCY1LSIYYY0B2WEHZV33QFLI&v=20161120';
+
           $.ajax({
             "type": 'GET',
             "url": url,
             "cache": true,
             "dataType": "jsonp",
             "success":function(data) {
+              console.log('data', data);
               data.response.venues.forEach(function(venue) {
                 self.placeList.push(new Place(venue));//not placeList() per NathanM
               });
+              console.log('placeListAjax', self.placeList());
               self.showMarker(self.placeList());
             },
             error: function(exception) {
@@ -226,11 +210,15 @@
               }
             });
             //filter the list view based on the user input
-            return ko.utils.arrayFilter(self.placeList(), function(place){
+            var searchResults = ko.utils.arrayFilter(self.placeList(), function(place){
                return place.name().toLowerCase().indexOf(search) >= 0;
             });
-          },this);//Note:this is optional here. I guess because "self" is used.
+            console.log('self.searchResults in', searchResults);
+            return searchResults;
 
+          },this);//Note:this is optional here. I guess because "self" is used.
+          console.log('self.searchResults out', self.searchResults());
+          console.log('self.placeList()', self.placeList());
           //show info window and animate marker when list item gets clicked
           // self.placeClicked = function(place) {
           //   place.marker.setAnimation(google.maps.Animation.DROP);
