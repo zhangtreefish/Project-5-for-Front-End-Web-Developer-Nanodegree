@@ -2,7 +2,7 @@ var map1;
 function createMap(){
   'use strict';
   var myOptions = {
-      zoom: 2,
+      zoom: 10,
       center: new google.maps.LatLng(29.54, -98.51),
       mapTypeId: "terrain"
   };
