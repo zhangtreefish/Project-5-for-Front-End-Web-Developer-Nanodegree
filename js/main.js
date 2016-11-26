@@ -2,7 +2,7 @@ var map1;
 function createMap(){
   'use strict';
   var myOptions = {
-      zoom: 10,
+      zoom: 2,
       center: new google.maps.LatLng(29.54, -98.51),
       mapTypeId: "terrain"
   };
@@ -45,7 +45,7 @@ function MyViewModel() {
   self.placeList = ko.observableArray([]);
   self.currentPlace = ko.observable('');
 
-  var url_bit = encodeQueryData({"query": "retirement", "near": "san antonio"});
+  var url_bit = encodeQueryData({"query": self.query(), "near": self.locale()});
   console.log('url', url_bit);
   var url = 'https://api.foursquare.com/v2/venues/search?query='+url_bit+'&client_id=UZTDD0DNGXWBBNXSE5N3EOEU2ZSO5LTQ2PICPIAY5ZTUZR1U&client_secret=N1VQRVFHBJMJDCLZBMBA5ANEKCY1LSIYYY0B2WEHZV33QFLI&v=20161120';
 
