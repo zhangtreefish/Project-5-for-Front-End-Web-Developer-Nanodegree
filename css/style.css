@@ -1,0 +1,37 @@
+#map {
+  width: 400px;
+  height: 400px;
+  max-width: 100%;/*add this to match smaller devices*/
+  max-height: 100%;
+}
+
+#list-view {
+  height: 100%;
+}
+
+/*use rem font to make font bigger and relative to parent's font*/
+tr td,
+h5 {
+  font-size: 2.0rem;
+}
+
+/*size the infowindow to be able to fit in the map*/
+#siteUrl {
+  width: 220px;
+  height: 50px;
+}
+
+/*add padding to table elements to faciliate touch on tap targets*/
+td {
+  padding-top: 1.0rem;
+  padding-right: 40px;/*40px is the recommended minimum space between tap targets*/
+}
+
+/*set column width for better layout*/
+.table-column1 {
+  width: 60%;
+}
+
+.table-column2 {
+  width:20%;
+}
