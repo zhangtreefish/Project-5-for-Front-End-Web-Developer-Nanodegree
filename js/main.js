@@ -40,8 +40,8 @@ function encodeQueryData(data) {
 function MyViewModel() {
   var self = this;
 
-  self.query = ko.observable('what');
-  self.locale = ko.observable('where');
+  self.query = ko.observable("retirement");
+  self.locale = ko.observable("san antonio");
   self.placeList = ko.observableArray([]);
   self.currentPlace = ko.observable('');
 

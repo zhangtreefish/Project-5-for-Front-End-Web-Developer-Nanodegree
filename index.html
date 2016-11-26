@@ -22,9 +22,15 @@
           <h2>Search Bar</h2>
           <h5> Tell FourSquare 'what' you would like to know about 'where'</h5>
           <label for="q">Query</label>
-          <input id="search" type="search" placeholder="donuts" name="q" data-bind="value: query,valueUpdate: 'keyup'" autocomplete="on">
+          <input id="search" type="search" placeholder="" name="q" data-bind="value: query,valueUpdate: 'keyup'" autocomplete="on">
+          <br>
           <label for="l">Locale</label>
-          <input id="locale" type="search" placeholder="San Antonio" name="l" data-bind="value: locale,valueUpdate: 'keyup'" autocomplete="on">
+          <input id="locale" type="search" placeholder="" name="l" data-bind="value: locale,valueUpdate: 'keyup'" autocomplete="on">
+          <div>
+            <span> Query and Locale </span>
+            <span data-bind="text">query</span>
+            <span data-bind="text">locale</span>
+          </div>
           <h2>List View</h2>
           <table id="listView">
             <thead>
@@ -51,6 +57,6 @@
       </div>
     </div>
 
-    <script src='js/4sq.js'></script>
+    <script src='js/main.js'></script>
   </body>
 </html>
