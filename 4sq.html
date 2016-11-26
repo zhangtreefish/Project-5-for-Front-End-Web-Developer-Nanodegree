@@ -65,8 +65,8 @@
         <div class="col-md-6">
           <h2>Search Bar</h2>
           <h5> type something below to see the list of retirement homes</h5>
-          <input id="search" type="search" placeholder="retirement homes" name="q" data-bind="value: query,valueUpdate: 'keyup'" autocomplete="off">
-          <input id="locale" type="search" placeholder="San Antonio" name="q" data-bind="value: locale,valueUpdate: 'keyup'" autocomplete="off">
+          <input id="search" type="search" placeholder="retirement homes" name="q" data-bind="value: query,valueUpdate: 'keyup'" autocomplete="on">
+          <input id="locale" type="search" placeholder="San Antonio" name="q" data-bind="value: locale,valueUpdate: 'keyup'" autocomplete="on">
         <!-- the list-view -->
           <h2>List View</h2>
           <table id="listView">
@@ -122,6 +122,7 @@
           this.marker = {};
           this.contentString = '<div id="content">'+
                     '<h4 id="firstHeading" class="firstHeading">Address</h4>'+
+                    this.name() +
                     '<div id="siteAddress">'+this.info+'</div>'+
                     '</div>';
          };
@@ -199,6 +200,7 @@
           //The live filtering function has to be placed near the end;
           self.searchResults = ko.computed(function(){
             var search = self.query().toLowerCase();//set outside for performance per Karol
+            console.log('search:', search);
             //hide a marker if its location name does not appear in the user input
             self.placeList().forEach(function(currentValue,index,array) {
               if (currentValue.marker.setVisible) {
@@ -210,11 +212,13 @@
               }
             });
             //filter the list view based on the user input
-            var searchResults = ko.utils.arrayFilter(self.placeList(), function(place){
-               return place.name().toLowerCase().indexOf(search) >= 0;
+            var searchResults = ko.computed(function() {
+              return ko.utils.arrayFilter(self.placeList(), function(place){
+                return place.name().toLowerCase().indexOf(search) >= 0;
+              });
             });
-            console.log('self.searchResults in', searchResults);
-            return searchResults;
+            console.log('self.searchResults in', searchResults());
+            return searchResults();
 
           },this);//Note:this is optional here. I guess because "self" is used.
           console.log('self.searchResults out', self.searchResults());
