@@ -36,36 +36,37 @@ function encodeQueryData(data) {
   return ret.join('&');
 }
 
-
 function MyViewModel() {
   var self = this;
 
-  self.query = ko.observable("retirement");
+  self.query = ko.observable("retirement homes");
   self.locale = ko.observable("san antonio");
   self.placeList = ko.observableArray([]);
   self.currentPlace = ko.observable('');
 
   var url_bit = encodeQueryData({"query": self.query(), "near": self.locale()});
-  console.log('url', url_bit);
-  var url = 'https://api.foursquare.com/v2/venues/search?query='+url_bit+'&client_id=UZTDD0DNGXWBBNXSE5N3EOEU2ZSO5LTQ2PICPIAY5ZTUZR1U&client_secret=N1VQRVFHBJMJDCLZBMBA5ANEKCY1LSIYYY0B2WEHZV33QFLI&v=20161120';
-
-  $.ajax({
-    "type": 'GET',
-    "url": url,
-    "cache": true,
-    "dataType": "jsonp",
-    "success":function(data) {
-      console.log('data', data);
-      data.response.venues.forEach(function(venue) {
-        self.placeList.push(new Place(venue));//not placeList() per NathanM
-      });
-      console.log('placeListAjax', self.placeList());
-      self.showMarker(self.placeList());
-    },
-    error: function(exception) {
-      alert("data not available at present");
-    }
+  self.url = ko.computed(function(){
+    return 'https://api.foursquare.com/v2/venues/search?query='+url_bit+'&client_id=UZTDD0DNGXWBBNXSE5N3EOEU2ZSO5LTQ2PICPIAY5ZTUZR1U&client_secret=N1VQRVFHBJMJDCLZBMBA5ANEKCY1LSIYYY0B2WEHZV33QFLI&v=20161120';
   });
+
+  ko.computed(function() {
+    $.ajax({
+      "type": 'GET',
+      "url": self.url(),
+      "cache": true,
+      "dataType": "jsonp",
+      "success":function(data) {
+        data.response.venues.forEach(function(venue) {
+          self.placeList.push(new Place(venue));//not placeList() per NathanM
+        });
+        console.log('self.placeList()', self.placeList());
+        self.showMarker(self.placeList());
+      },
+      error: function(exception) {
+        alert("data not available at present");
+      }
+    })
+  })
 
   //define a function for use in showMarker; one bounce takes about 700ms, use setTimeout to limit the nubmer of bounces; otherwise the bounce persists
   function bounceThrice() {
@@ -102,7 +103,6 @@ function MyViewModel() {
   //The live filtering function has to be placed near the end;
   self.searchResults = ko.computed(function(){
     var search = self.query().toLowerCase();//set outside for performance per Karol
-    console.log('search:', search);
     //hide a marker if its location name does not appear in the user input
     self.placeList().forEach(function(currentValue,index,array) {
       if (currentValue.marker.setVisible) {
@@ -119,12 +119,9 @@ function MyViewModel() {
         return place.name().toLowerCase().indexOf(search) >= 0;
       });
     });
-    console.log('self.searchResults in', searchResults());
     return searchResults();
 
-  },this);//Note:this is optional here. I guess because "self" is used.
-  console.log('self.searchResults out', self.searchResults());
-  console.log('self.placeList()', self.placeList());
+  },this);//Note:`this` is optional here: because "self" is used.
   //show info window and animate marker when list item gets clicked
   // self.placeClicked = function(place) {
   //   place.marker.setAnimation(google.maps.Animation.DROP);
@@ -137,5 +134,8 @@ function MyViewModel() {
   };
 };
 
-var viewModel = new MyViewModel();
-ko.applyBindings(viewModel);
+function showPage() {
+  return ko.applyBindings(new MyViewModel());
+}
+
+showPage();
