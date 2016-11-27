@@ -45,10 +45,11 @@ function MyViewModel() {
   self.currentPlace = ko.observable('');
 
   var url_bit = encodeQueryData({"query": self.query(), "near": self.locale()});
-  self.url = ko.computed(function(){
-    return 'https://api.foursquare.com/v2/venues/search?query='+url_bit+'&client_id=UZTDD0DNGXWBBNXSE5N3EOEU2ZSO5LTQ2PICPIAY5ZTUZR1U&client_secret=N1VQRVFHBJMJDCLZBMBA5ANEKCY1LSIYYY0B2WEHZV33QFLI&v=20161120';
-  });
 
+  self.url = ko.computed(function(){
+    return 'https://api.foursquare.com/v2/venues/search?'+url_bit+'&client_id=UZTDD0DNGXWBBNXSE5N3EOEU2ZSO5LTQ2PICPIAY5ZTUZR1U&client_secret=N1VQRVFHBJMJDCLZBMBA5ANEKCY1LSIYYY0B2WEHZV33QFLI&v=20161120';
+  });
+  console.log('self.url():', self.url());
   ko.computed(function() {
     $.ajax({
       "type": 'GET',
@@ -66,7 +67,7 @@ function MyViewModel() {
         alert("data not available at present");
       }
     })
-  })
+  });
 
   //define a function for use in showMarker; one bounce takes about 700ms, use setTimeout to limit the nubmer of bounces; otherwise the bounce persists
   function bounceThrice() {
